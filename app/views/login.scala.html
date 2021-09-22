@@ -1,0 +1,60 @@
+@import b3.vertical.fieldConstructor
+@(form: Form[AuthController.LoginForm])
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Sign in | Blog</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="viewport" content="width=device-width">
+        <meta name="robots" content="noindex, nofollow">
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.js"></script>
+
+        <link rel="stylesheet" href="/assets/bootstrap/css/bootstrap.paper.min.css">
+        <link rel="stylesheet" href="/assets/bootstrap/css/bootstrap.paper.min.css">
+        <link rel="stylesheet" href="/assets/css/animate.min.css">
+        <link rel="stylesheet" href="/assets/bootstrap-dialog/css/bootstrap-dialog.min.css">
+
+        <link rel="stylesheet" href="/assets/css/style.css">
+    </head>
+    <body>
+        <div style="max-width:525px; float:none; margin:40px auto;">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Blog</h3>
+                </div>
+                <div class="panel-body">
+                    <fieldset>
+                        <legend>Sign in</legend>
+                        @b3.form(routes.AuthController.authenticate) {
+                            @b3.email( form("email"), '_label -> "Login", 'placeholder -> "login@somewhere.com" )
+                            @b3.password( form("password"), '_label -> "Password" )
+                            @b3.submit('class -> "btn btn-primary"){ <span class="glyphicon glyphicon-log-in margin-right"></span> Sign in }
+                        }
+                    </fieldset>
+                </div>
+                <div class="panel-footer">
+                    <small class="pull-right">Requires enabled cookies.</small>
+                </div>
+            </div>
+        </div>
+
+        <script src="//code.jquery.com/jquery-1.11.2.js"></script>
+        <script src="/assets/js/3rd/netteLiveFormValidation.js"></script>
+
+        <script src="/assets/bootstrap/js/bootstrap.min.js"></script>
+        <script src="/assets/js/3rd/bootstrap-notify.min.js"></script>
+        <script src="/assets/bootstrap-dialog/js/bootstrap-dialog.min.js"></script>
+        <script src="/assets/js/3rd/jquery.filter_input.js"></script>
+        <script src="/assets/js/helpers.min.js"></script>
+
+        @if(form.hasGlobalErrors) {
+            <script>
+                jQuery(document).ready(function($) {
+                    $.my.notify("@{form.globalError.message}", "error");
+                });
+            </script>
+        }
+    </body>
+</html>

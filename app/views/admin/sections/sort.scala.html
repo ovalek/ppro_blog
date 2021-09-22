@@ -1,0 +1,129 @@
+@import models.view.AdminViewModel
+@import play.filters.csrf.AddCSRFToken
+@(vm: AdminViewModel, sections: java.util.List[Section], csrf: String)
+
+@*
+* Call the `main` template with one argument, that represents
+* global template variables.
+*@
+@admin.main(vm) {
+
+    <div class="clearfix page-header">
+        <h3>@vm.title</h3>
+        <div class="pull-right btnContainer">
+            <a class="btn btn-default" href="@routes.AdminSectionsController.list">Sections list</a>
+        </div>
+    </div>
+
+    <div class="btnContainer">
+        <a class="btn btn-primary" href="@routes.AdminSectionsController.section(0)"><span class="glyphicon glyphicon-plus-sign"></span>New section</a>
+        <a id="orderSaveBtn" data-save-url="@routes.AdminSectionsController.saveOrder?csrfToken=@csrf" class="btn btn-default" href="#"><span class="glyphicon glyphicon-floppy-disk"></span>Save order</a>
+    </div>
+
+    <ul class="mlList multiSortable sList">
+        <li class="abstract"><ul id="sectionsSorter">
+        @for(s <- sections) {
+            <li id="section_@s.id" data-id="@s.id" class="normal noChildren">
+                <div class="head"><span class="name"><strong>@s.name</strong>@if(s.alias != "") { &nbsp;<small><em>@s.alias</em></small>}</span>
+                    <div class="btnContainer">
+                        <a class="btn btn-sm btn-default glyphicon glyphicon-wrench" data-item-edit data-item-id="@s.id" title="Update" data-toggle="tooltip" data-placement="bottom" href="@routes.AdminSectionsController.section(s.id)"></a>
+                        <a href="#" data-href="@routes.AdminSectionsController.remove(s.id)?csrfToken=@csrf" class="btn btn-sm btn-danger glyphicon glyphicon-trash" data-item-delete="@s.id" data-name="@s.name" title="Remove" data-toggle="tooltip" data-placement="bottom"></a>
+                    </div>
+                </div>
+            </li>
+        }
+        </ul></li>
+    </ul>
+
+    <div class="clearfix"></div>
+    <div class="btnBottomContainer">
+        <span>Sections count: <strong>@sections.size()</strong></span>
+        <span style="margin-left:50px;" class="ajaxSaveOrderInfo">&nbsp;</span>
+    </div>
+}
+
+<script src="/assets/jquery-ui-1.11.4.sortable/jquery-ui.min.js"></script>
+<script>
+    jQuery(document).ready(function($) {
+        var $sectionsSorter = $('#sectionsSorter');
+
+        $sectionsSorter.on('click', 'a[data-item-delete]', function (event) {
+            event.preventDefault();
+            var name = $(this).attr('data-name');
+            var location = $(this).attr("data-href");
+            $.my.confirmDialogWC(
+                    'confirm',
+                    'danger',
+                    'Confirmation',
+                    'Do you really want to remove section "<strong>' + name + '</strong>" including all related posts?',
+                    'storno',
+                    function () {
+                        window.location.replace(location);
+                    }
+            );
+        });
+
+        var saveOrder = function($realizationsContainer, $orderSaveBtn, $saveOrderInfo) {
+            $realizationsContainer.sortable( "disable" );
+
+            var url = $orderSaveBtn.attr('data-save-url');
+            var order = $realizationsContainer.sortable( "toArray" );
+            // id:order pairs (id must be "section_"+number)
+            var orderObject = {};
+            for (var i = 0; i < order.length; ++i) {
+                orderObject[order[i].slice( 8 )] = i+1;
+            }
+            var orderEncoded = JSON.stringify(orderObject);
+
+            var $loaderEl = $('<span class="circleLoader glyphicon glyphicon-cog glyphicon-cog-animate" title="Saving..."></span>');
+            $orderSaveBtn.after($loaderEl);
+            $saveOrderInfo.html('<span class="circleLoader glyphicon glyphicon-cog glyphicon-cog-animate" title="Saving..."></span>');
+            $.ajax({
+                type: "POST",
+                url: url,
+                data:{serializedOrder:orderEncoded},
+                success: function(response){
+                    $realizationsContainer.sortable( "enable" );
+                    var json = $.my.checkResponse(response);
+                    if (isSet(json.status) && json.status) {
+                        window.onbeforeunload = null;
+                        $orderSaveBtn.removeClass('btn-success');
+                        // info
+                        $.my.notify(json.msg, "success");
+                        $saveOrderInfo.html(json.msg).addClass("ajaxSaveOrderInfoOK");
+                    } else {
+                        $.my.notify(json.msg, "error");
+                        $saveOrderInfo.html(json.msg).addClass("ajaxSaveOrderInfoError");
+                    }
+                    $loaderEl.remove();
+                },
+                error: function() {
+                    $loaderEl.remove();
+                    $saveOrderInfo.html('Connection error.').addClass("ajaxSaveOrderInfoError");
+                    $.my.notify("Connection error, please try again later.", "fatalError");
+                    $realizationsContainer.sortable( "refreshPositions" );
+                    $realizationsContainer.sortable( "enable" );
+                }
+            });
+        };
+
+        if ($('#orderSaveBtn').length) {
+            $sectionsSorter.sortable({
+                placeholder: "well placeholder",
+                update: function () {
+                    $orderSaveBtn = $('#orderSaveBtn');
+                    $orderSaveBtn.addClass("btn-success");
+                    window.onbeforeunload = function () {
+                        return "Aktuální pořadí realizací nebylo uloženo. Chcete přesto pokračovat?";
+                    };
+                }
+            });
+        }
+
+        $('#orderSaveBtn').on("click", function(event) {
+            event.preventDefault();
+            $(this).blur();
+            saveOrder($sectionsSorter, $(this), $('span.ajaxSaveOrderInfo'));
+        });
+    });
+</script>

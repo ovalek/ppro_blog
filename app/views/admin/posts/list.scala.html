@@ -1,0 +1,87 @@
+@import models.view.AdminViewModel
+@(vm: AdminViewModel, section: Section, csrf: String)
+
+@*
+* Call the `main` template with one argument, that represents
+* global template variables.
+*@
+@admin.main(vm) {
+
+    <div class="clearfix page-header">
+        <h3>@vm.title</h3>
+        <!-- section selection -->
+        <div class="filterButtons btn-group">
+            <a class="btn btn-lg btn-default dropdown-toggle" data-toggle="dropdown" href="@routes.AdminPostsController.list(section.id)">@section.name <span class="caret"></span></a>
+            <ul class="dropdown-menu" role="menu">
+                @for(s <- Section.find.all()) {
+                    @if(s.id == section.id) {
+                        <li class="active"><a href="@routes.AdminPostsController.list(s.id)">@s.name</a></li>
+                    } else {
+                        <li><a href="@routes.AdminPostsController.list(s.id)">@s.name</a></li>
+                    }
+                }
+            </ul>
+        </div>
+    </div>
+
+    <div class="btnContainer">
+        <a class="btn btn-primary" href="@routes.AdminPostsController.post(section.id, 0)"><span class="glyphicon glyphicon-pencil"></span>New post</a>
+    </div>
+
+    <table class="table table-striped table-hover withPadding">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Posted</th>
+                <th title="Published"><span class="glyphicon glyphicon-info-sign"></span></th>
+                <th><!-- --></th>
+            </tr>
+        </thead>
+        <tbody id="tablePosts">
+            @for(p <- Post.find.where().eq("section_id", section.id).orderBy("posted DESC").findList()) {
+                <tr id="post-@p.id">
+                    <td class="name"><strong>@p.title</strong></td>
+                    <td>@p.posted.format("yyyy-MM-dd")</td>
+                    <td>
+                        @if(p.published) {
+                            <span class="glyphicon glyphicon-ok" title="Published"></span>
+                        } else {
+                            <span class="glyphicon glyphicon-eye-close" title="Hidden"></span>
+                        }
+                    </td>
+                    <td>
+                        <div class="tableBtnContainer">
+                            <a class="btn btn-sm btn-default glyphicon glyphicon-wrench" data-item-edit data-item-id="@p.id" title="Update" data-toggle="tooltip" data-placement="bottom" href="@routes.AdminPostsController.post(section.id, p.id)"></a>
+                            <a class="btn btn-sm btn-default glyphicon glyphicon-list-alt" title="Comments" data-toggle="tooltip" data-placement="bottom" href="@routes.AdminPostsController.comments(section.id, p.id)"></a>
+                            <a href="#" data-href="@routes.AdminPostsController.remove(section.id, p.id)?csrfToken=@csrf" class="btn btn-sm btn-danger glyphicon glyphicon-trash" data-item-delete="@p.id" data-name="@p.title" title="Remove" data-toggle="tooltip" data-placement="bottom"></a>
+                        </div>
+                    </td>
+                </tr>
+            }
+    </table>
+
+    <div class="btnBottomContainer">
+        <span>Posts count: <strong>@section.posts.size()</strong></span>
+    </div>
+}
+
+<script>
+    jQuery(document).ready(function($) {
+        var $table = $('#tablePosts');
+        $table.on('click', 'a[data-item-delete]', function (event) {
+            event.preventDefault();
+            var name = $(this).attr('data-name');
+            var location = $(this).attr("data-href");
+            $.my.confirmDialogWC(
+                    'confirm',
+                    'danger',
+                    'Confirmation',
+                    'Do you really want to remove "<strong>' + name + '</strong>"?',
+                    'storno',
+                    function () {
+                        window.location.replace(location);
+                    }
+            );
+        });
+    });
+</script>

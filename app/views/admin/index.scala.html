@@ -1,0 +1,45 @@
+@import models.view.AdminViewModel
+@(vm: AdminViewModel)
+
+@*
+* Call the `main` template with one argument, that represents
+* global template variables.
+*@
+@admin.main(vm) {
+
+    <div class="page-header">
+        <h3>@vm.title</h3>
+    </div>
+
+    <div class="btnContainer">
+        <a class="btn btn-default" href="@routes.AdminPostsController.list(0)"><span class="glyphicon glyphicon-pencil"></span>Posts</a>
+        <a class="btn btn-default" href="@routes.AdminSectionsController.list"><span class="glyphicon glyphicon-th"></span>Sections</a>
+        <a class="btn btn-default" href="@routes.AdminUsersController.list"><span class="glyphicon glyphicon-user"></span>Users</a>
+    </div>
+
+    <div class="infoblock">
+        <h5>Using</h5>
+        <ul style="float:left; margin-right:50px;">
+            <li><a href="https://playframework.com/" target="_blank"><strong>Play framework</strong></a>
+                <ul>
+                    <li><a href="https://github.com/adrianhurt/play-bootstrap" target="_blank">adrianhurt/play-bootstrap</a></li>
+                </ul>
+            </li>
+            <li><a href="https://ebean-orm.github.io/" target="_blank">Ebean ORM</a></li>
+            <li>
+                <a href="http://jquery.com/" target="_blank">jQuery</a>, <a href="http://jqueryui.com/" target="_blank">jQuery UI</a>
+            </li>
+            <li><a href="http://ckeditor.com/" target="_blank">CKEditor</a></li>
+            <li><a href="https://github.com/scottjehl/Respond" target="_blank">Respond.js</a></li>
+        </ul>
+        <ul style="float:left;">
+            <li><a href="http://getbootstrap.com/" target="_blank">Bootstrap</a>
+                <ul>
+                    <li><a href="http://nakupanda.github.io/bootstrap3-dialog/" target="_blank">Bootstrap dialog plugin</a></li>
+                    <li><a href="http://bootstrap-notify.remabledesigns.com/" target="_blank">Bootstrap Notify</a></li>
+                    <li><a href="http://bootswatch.com/" target="_blank">Bootstrap theme</a></li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+}

@@ -1,0 +1,30 @@
+@import models.view.AdminViewModel
+@import b3.horizontal.fieldConstructor
+@import views.html.helper.CSRF
+@(vm: AdminViewModel, userID: Integer, form: Form[User])
+
+@implicitFieldConstructor = @{ b3.horizontal.fieldConstructor("col-sm-4", "col-sm-8") }
+
+@*
+* Call the `main` template with one argument, that represents
+* global template variables.
+*@
+@admin.main(vm) {
+    <div class="clearfix page-header">
+        <h3>@vm.title</h3>
+    </div>
+
+    <div class="col-md-10 well">
+        <fieldset>
+            <legend>User form</legend>
+
+            @b3.form(CSRF(routes.AdminUsersController.save(userID))) {
+                @b3.text( form("name"), '_label -> "Name", 'placeholder -> "User name" )
+                @b3.email( form("email"), '_label -> "E-mail", 'placeholder -> "login@somewhere.com" )
+                @b3.password( form("password"), '_label -> "New password")
+                @b3.submit('class -> "btn btn-default"){ Save }
+            }
+
+        </fieldset>
+    </div>
+}

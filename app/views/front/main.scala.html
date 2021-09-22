@@ -1,0 +1,52 @@
+@(section: Section)(content: Html)
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>@section.name | Blog</title>
+
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.js"></script>
+
+        <link rel="stylesheet" href="/assets/bootstrap/css/bootstrap.paper.min.css">
+        <link rel="stylesheet" href="/assets/bootstrap/css/bootstrap.paper.min.css">
+        <link rel="stylesheet" href="/assets/css/animate.min.css">
+        <link rel="stylesheet" href="/assets/bootstrap-dialog/css/bootstrap-dialog.min.css">
+
+        <link rel="stylesheet" href="/assets/css/style.min.css">
+    </head>
+    <body>
+        <div class="navbar navbar-default" id="leTopBar">
+            <div class="container">
+                <div class="navbar-header">
+                    <a class="navbar-brand" title="Homepage blog" href="/"><span class="hidden-lg glyphicon glyphicon-home"></span><span class="visible-lg-inline">Blog</span></a>
+                    <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#navbar-main">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                </div>
+                <div class="navbar-collapse collapse" id="navbar-main">
+                    <ul class="nav navbar-nav">
+                        @for(s <- Section.find.where().ne("alias", "").orderBy("menu_order ASC").findList()) {
+                            @if(s.alias == section.alias) {
+                                <li class="active"><a href="@routes.FrontController.section(s.alias)">@s.name</a></li>
+                            } else {
+                                <li><a href="@routes.FrontController.section(s.alias)">@s.name</a></li>
+                            }
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <h1>@section.name</h1>
+            @content
+        </div>
+
+        <script src="//code.jquery.com/jquery-1.11.2.js"></script>
+        <script src="/assets/bootstrap/js/bootstrap.min.js"></script>
+
+    </body>
+</html>

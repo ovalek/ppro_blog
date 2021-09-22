@@ -1,0 +1,60 @@
+@import models.view.AdminViewModel
+@(vm: AdminViewModel, section: Section, post: Post, csrf: String)
+
+@*
+* Call the `main` template with one argument, that represents
+* global template variables.
+*@
+@admin.main(vm) {
+
+    <div class="clearfix page-header">
+        <h3>@vm.title</h3>
+
+        <div class="pull-right btnContainer">
+            <a class="btn btn-default" href="@routes.AdminPostsController.list(0)">Posts list</a>
+        </div>
+    </div>
+
+    <div class="btnContainer" id="commentsButtonsContainer">
+        <a class="btn btn-default" href="@routes.AdminPostsController.post(section.id, post.id)"><span class="glyphicon glyphicon-pencil"></span>Update post</a>
+        <a class="btn btn-danger" href="#" data-href="@routes.AdminPostsController.removeAllComments(section.id, post.id)?csrfToken=@csrf" data-comments-delete><span class="glyphicon glyphicon-trash"></span>Remove all comments</a>
+    </div>
+
+    @if(post.comments.size() > 0) {
+        <div class="clearfix"></div><br/>
+        <h5>Comments</h5>
+        <div class="list-group">
+        @for(c <- post.comments) {
+            <div class="list-group-item">
+                <a href="@routes.AdminPostsController.removeComment(section.id, c.id)?csrfToken=@csrf" class="pull-right btn btn-sm btn-danger glyphicon glyphicon-trash" data-item-delete="@c.id" title="Remove" data-toggle="tooltip" data-placement="bottom"></a>
+                <h4 class="list-group-item-heading">@c.name</h4>
+                <p class="list-group-item-text">@c.content</p>
+            </div>
+        }
+        </div>
+    }
+
+    <div class="btnBottomContainer">
+        <span>Comments count: <strong>@post.comments.size()</strong></span>
+    </div>
+}
+
+<script>
+        jQuery(document).ready(function($) {
+            var $btnCon = $('#commentsButtonsContainer');
+            $btnCon.on('click', 'a[data-comments-delete]', function (event) {
+                event.preventDefault();
+                var location = $(this).attr("data-href");
+                $.my.confirmDialogWC(
+                        'confirm',
+                        'danger',
+                        'Confirmation',
+                        'Do you really want to remove all related comments?',
+                        'storno',
+                        function () {
+                            window.location.replace(location);
+                        }
+                );
+            });
+        });
+</script>

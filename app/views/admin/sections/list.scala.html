@@ -1,0 +1,69 @@
+@import models.view.AdminViewModel
+@(vm: AdminViewModel, sections: java.util.List[Section], csrf: String)
+
+@*
+* Call the `main` template with one argument, that represents
+* global template variables.
+*@
+@admin.main(vm) {
+
+    <div class="clearfix page-header">
+        <h3>@vm.title</h3>
+        <div class="pull-right btnContainer">
+            <a class="btn btn-default" href="@routes.AdminSectionsController.sort">Sort sections</a>
+        </div>
+    </div>
+
+    <div class="btnContainer">
+        <a class="btn btn-primary" href="@routes.AdminSectionsController.section(0)"><span class="glyphicon glyphicon-plus-sign"></span>New section</a>
+    </div>
+
+    <table class="table table-striped table-hover withPadding">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Alias</th>
+                <th><!-- --></th>
+            </tr>
+        </thead>
+        <tbody id="tableSections">
+            @*{sections = Section.find.where().orderBy("menu_order ASC").findList()}*@
+            @for(s <- sections) {
+                <tr id="section-@s.id">
+                    <td class="name"><strong>@s.name</strong></td>
+                    <td>@s.alias</td>
+                    <td>
+                        <div class="tableBtnContainer">
+                            <a class="btn btn-sm btn-default glyphicon glyphicon-wrench" data-item-edit data-item-id="@s.id" title="Update" data-toggle="tooltip" data-placement="bottom" href="@routes.AdminSectionsController.section(s.id)"></a>
+                            <a href="#" data-href="@routes.AdminSectionsController.remove(s.id)?csrfToken=@csrf" class="btn btn-sm btn-danger glyphicon glyphicon-trash" data-item-delete="@s.id" data-name="@s.name" title="Remove" data-toggle="tooltip" data-placement="bottom"></a>
+                        </div>
+                    </td>
+                </tr>
+            }
+    </table>
+
+    <div class="btnBottomContainer">
+        <span>Sections count: <strong>@sections.size()</strong></span>
+    </div>
+}
+
+<script>
+    jQuery(document).ready(function($) {
+        var $table = $('#tableSections');
+        $table.on('click', 'a[data-item-delete]', function (event) {
+            event.preventDefault();
+            var name = $(this).attr('data-name');
+            var location = $(this).attr("data-href");
+            $.my.confirmDialogWC(
+                    'confirm',
+                    'danger',
+                    'Confirmation',
+                    'Do you really want to remove section "<strong>' + name + '</strong>" including all related posts?',
+                    'storno',
+                    function () {
+                        window.location.replace(location);
+                    }
+            );
+        });
+    });
+</script>
