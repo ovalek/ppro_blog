@@ -1,0 +1,30 @@
+p.center { text-align:center; }
+p.alignLeft { text-align:left; }
+p.alignRight { text-align:right; }
+
+p.statement {
+	font-weight: 400;
+	text-transform: uppercase;
+	text-align: left;
+	margin: 1.5rem 0;
+	text-shadow: 0.07rem 0.07rem 0.14rem rgba(0,0,0,0.25);
+}
+
+p.statement-main {
+	font-weight: 800;
+	text-transform: uppercase;
+	text-align: left;
+	margin: 1.5rem 0;
+	text-shadow: 0.07rem 0.07rem 0.14rem rgba(0,0,0,0.25);
+}
+
+img.imgSmallMargin { margin:0.4rem; }
+img.imgNoMargin { margin:0; }
+img.singleCenterImg { margin:1.5rem auto; display:block; }
+
+img.imgLeft, img.imgRight { display:block; margin-bottom: 1.5rem; margin-top:0; }
+img.imgLeft { float:left; margin-right: 1.5rem; margin-left:0; }
+img.imgRight { float:right;	margin-left: 1.5rem; margin-right:0; }
+
+.article td, .albumDesc td, .cke_editable td { padding:5px; }
+
