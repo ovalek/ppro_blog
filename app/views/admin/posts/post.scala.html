@@ -1,14 +1,10 @@
 @import models.view.AdminViewModel
 @import b3.horizontal.fieldConstructor
 @import views.html.helper.CSRF
-@(vm: AdminViewModel, section: Section, postID: Integer, form: Form[Post])
+@(vm: AdminViewModel, section: Section, postID: Integer, form: play.data.Form[Post])(implicit request: play.mvc.Http.Request, messages: Messages)
 
 @implicitFieldConstructor = @{ b3.horizontal.fieldConstructor("col-sm-4", "col-sm-8") }
 
-@*
-* Call the `main` template with one argument, that represents
-* global template variables.
-*@
 @admin.main(vm) {
     <div class="clearfix page-header">
         <h3>@vm.title in <strong>@section.name</strong></h3>

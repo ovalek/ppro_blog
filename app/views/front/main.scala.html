@@ -29,7 +29,7 @@
                 </div>
                 <div class="navbar-collapse collapse" id="navbar-main">
                     <ul class="nav navbar-nav">
-                        @for(s <- Section.find.where().ne("alias", "").orderBy("menu_order ASC").findList()) {
+                        @for(s <- Section.find.query().where().ne("alias", "").orderBy("menu_order ASC").findList()) {
                             @if(s.alias == section.alias) {
                                 <li class="active"><a href="@routes.FrontController.section(s.alias)">@s.name</a></li>
                             } else {

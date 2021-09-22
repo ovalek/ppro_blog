@@ -1,6 +1,6 @@
 @import models.view.AdminViewModel
 @import play.filters.csrf.AddCSRFToken
-@(vm: AdminViewModel, sections: java.util.List[Section], csrf: String)
+@(vm: AdminViewModel, sections: java.util.List[Section], csrf: String)(implicit request: play.mvc.Http.Request, messages: Messages)
 
 @*
 * Call the `main` template with one argument, that represents

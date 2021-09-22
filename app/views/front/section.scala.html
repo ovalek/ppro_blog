@@ -2,7 +2,7 @@
 
 @front.main(section) {
 
-    @for(p <- Post.find.where().eq("section_id", section.id).eq("published", true).orderBy("posted DESC").findList()) {
+    @for(p <- Post.find.query().where().eq("section_id", section.id).eq("published", true).orderBy("posted DESC").findList()) {
         <div class="well">
             <h2><small class="pull-right" title="Posted">@p.posted.format("yyyy-MM-dd")</small><a href="@routes.FrontController.post(section.alias, p.id)">@p.title</a></h2>
             <div class="clearfix"></div>

@@ -1,6 +1,6 @@
 @import b3.horizontal.fieldConstructor
 @import views.html.helper.CSRF
-@(section: Section, post: Post, form: Form[Comment])
+@(section: Section, post: Post, form: play.data.Form[Comment])(implicit request: play.mvc.Http.Request, messages: Messages)
 
 @implicitFieldConstructor = @{ b3.horizontal.fieldConstructor("col-sm-4", "col-sm-8") }
 

@@ -1,5 +1,5 @@
 @import models.view.AdminViewModel
-@(vm: AdminViewModel, section: Section, csrf: String)
+@(vm: AdminViewModel, section: Section, csrf: String)(implicit request: play.mvc.Http.Request, messages: Messages)
 
 @*
 * Call the `main` template with one argument, that represents
@@ -38,7 +38,7 @@
             </tr>
         </thead>
         <tbody id="tablePosts">
-            @for(p <- Post.find.where().eq("section_id", section.id).orderBy("posted DESC").findList()) {
+            @for(p <- Post.find.query().where().eq("section_id", section.id).orderBy("posted DESC").findList()) {
                 <tr id="post-@p.id">
                     <td class="name"><strong>@p.title</strong></td>
                     <td>@p.posted.format("yyyy-MM-dd")</td>
