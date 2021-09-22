@@ -1,6 +1,6 @@
 package models;
 
-import com.avaje.ebean.Model;
+import io.ebean.*;
 import com.fasterxml.jackson.databind.JsonNode;
 import play.data.Form;
 import play.data.validation.Constraints;
@@ -33,7 +33,7 @@ public class Section extends Model {
 
     public int menu_order;
 
-    public static Model.Finder<Integer, Section> find = new Model.Finder<>(Section.class);
+    public static Finder<Integer, Section> find = new Finder<>(Section.class);
 
     @Transactional
     public boolean saveWithValidation(Integer sectionID, Form<Section> form) {

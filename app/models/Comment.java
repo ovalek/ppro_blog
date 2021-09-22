@@ -1,6 +1,6 @@
 package models;
 
-import com.avaje.ebean.Model;
+import io.ebean.*;
 import com.avaje.ebean.annotation.CreatedTimestamp;
 import play.data.validation.Constraints;
 
@@ -27,5 +27,5 @@ public class Comment extends Model {
     @CreatedTimestamp
     public Date posted;
 
-    public static Model.Finder<Integer, Comment> find = new Model.Finder<>(Comment.class);
+    public static Finder<Integer, Comment> find = new Finder<>(Comment.class);
 }

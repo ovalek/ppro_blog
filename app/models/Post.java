@@ -1,7 +1,7 @@
 package models;
 
-import com.avaje.ebean.Model;
-import com.avaje.ebean.annotation.CreatedTimestamp;
+import io.ebean.*;
+import io.ebean.annotation.CreatedTimestamp;
 import play.data.validation.Constraints;
 
 import javax.persistence.*;
@@ -35,5 +35,5 @@ public class Post extends Model {
     @OrderBy("posted DESC")
     public List<Comment> comments = new ArrayList<>();
 
-    public static Model.Finder<Integer, Post> find = new Model.Finder<>(Post.class);
+    public static Finder<Integer, Post> find = new Finder<>(Post.class);
 }
