@@ -55,7 +55,7 @@ public class Section extends Model {
             id = sectionID;
             update();
         } else {
-            int maxOrder = find.query().setMaxRows(1).select("MAX(menu_order)").findOne().menu_order;
+            int maxOrder = find.query().select("MAX(menu_order)").findSingleAttribute();
             menu_order = ++maxOrder;
             save();
         }
