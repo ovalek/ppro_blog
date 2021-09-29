@@ -1,11 +1,11 @@
 package services;
 
-import com.github.t3hnar.bcrypt.BCrypt;
 import io.ebean.*;
 import models.Comment;
 import models.Post;
 import models.Section;
 import models.User;
+import org.mindrot.jbcrypt.BCrypt;
 
 import javax.inject.Singleton;
 import java.text.SimpleDateFormat;
@@ -31,13 +31,11 @@ public class InitialData {
             u1.id = 1;
             u1.email = "admin@nekde.cz";
             u1.name = "Admin";
-            //TODO: hash
-//            u1.password = org.apache.commons.codec.digest.DigestUtils.sha256Hex("admin@nekde.cz" + "password");
-            u1.password = "admin@nekde.cz" + "password";
+            u1.password =  BCrypt.hashpw("password", BCrypt.gensalt(12));
             u1.save();
 /*            SqlUpdate insert = Ebean.createSqlUpdate(
                     "INSERT INTO user (email, name, password) VALUES ('admin@nekde.cz', 'Admin', '"
-                    + org.apache.commons.codec.digest.DigestUtils.sha256Hex("admin@nekde.cz" + "password") + "')"
+                    + BCrypt.hashpw("password", BCrypt.gensalt(12)) + "')"
             );
             insert.execute();*/
         }

@@ -3,6 +3,7 @@ package models;
 //import com.avaje.ebean.Model;
 import io.ebean.*;
 import io.ebean.annotation.Transactional;
+import org.mindrot.jbcrypt.BCrypt;
 import play.Logger;
 import play.data.Form;
 import play.data.validation.Constraints;
@@ -34,16 +35,9 @@ public class User extends Model {
     public static User authenticate(String email, String password) {
         if (email == null && password == null) return null;
 
-        password = email + password;
-//        bcrypt
-//        String sha256hex = org.apache.commons.codec.digest.DigestUtils.sha256Hex(password);
-//        bcrypt
-//        String sha256hex = HashHelper.createPassword(password);
+        String hash = BCrypt.hashpw(password, BCrypt.gensalt(12));
 
-        // TODO: fixme add hash (https://index.scala-lang.org/t3hnar/scala-bcrypt/scala-bcrypt/4.3.0?target=_2.13)
-        String sha256hex = password;
-
-        return User.find.query().where().eq("email", email).eq("password", sha256hex).findOne();
+        return User.find.query().where().eq("email", email).eq("password", hash).findOne();
     }
 
     @Transactional
@@ -67,12 +61,9 @@ public class User extends Model {
 
         // hash password
         if (password != null) {
-//            Logger.debug(org.apache.commons.codec.digest.DigestUtils.sha256Hex(email + password));
-//            password = org.apache.commons.codec.digest.DigestUtils.sha256Hex(email + password);
-            //TODO: hash
-//            Logger.debug(email + password);
-            System.out.println(email + password);
-            password = email + password;
+            System.out.println(password);
+            password = BCrypt.hashpw(password, BCrypt.gensalt(12));
+            System.out.println(password);
         }
 
         if (userID != 0) {

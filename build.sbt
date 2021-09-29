@@ -22,7 +22,10 @@ libraryDependencies ++= Seq( evolutions, jdbc , ehcache , ws , specs2 % Test , g
 libraryDependencies += "com.adrianhurt" %% "play-bootstrap" % "1.6.1-P28-B3"
 //libraryDependencies += "uk.gov.hmrc" %% "bootstrap-backend-play-xx" % "x.x.x"
 //libraryDependencies += "com.github.t3hnar" %% "scala-bcrypt" % "4.3.0"
-libraryDependencies += "com.github.t3hnar" %% "scala-bcrypt" % "4.1"
+//libraryDependencies += "com.github.t3hnar" %% "scala-bcrypt" % "4.1"
+
+// https://mvnrepository.com/artifact/org.mindrot/jbcrypt
+libraryDependencies += "org.mindrot" % "jbcrypt" % "0.4"
 
 // enable H2 database
 //libraryDependencies += "com.h2database" % "h2" % "1.4.192"
