@@ -3,14 +3,14 @@ package controllers;
 import models.Comment;
 import models.Post;
 import models.Section;
-import models.view.AdminViewModel;
+import models.view.DependenciesContainer;
 import play.data.Form;
 import play.data.FormFactory;
 import play.filters.csrf.AddCSRFToken;
 import play.filters.csrf.CSRF;
 import play.filters.csrf.RequireCSRFCheck;
-import play.api.i18n.Messages;
 import play.mvc.Controller;
+import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.Security;
 import views.html.admin.posts.list;
@@ -21,7 +21,7 @@ import javax.inject.Inject;
 public class AdminPostsController extends Controller {
 
     @Inject
-    AdminViewModel vm;
+    DependenciesContainer dc;
 
     @Inject
     FormFactory formFactory;
@@ -42,24 +42,26 @@ public class AdminPostsController extends Controller {
     }
 
     @AddCSRFToken
-    public Result list(Integer sectionID) {
-        vm.title = "Posts";
+    public Result list(Http.Request request, Integer sectionID) {
+        dc.request = request;
+        dc.title = "Posts";
 
         Section section = getSection(sectionID);
 
         return ok(
-                list.render(vm, section, CSRF.getToken(vm.request).map(t -> t.value()).orElse("no token"))
+                list.render(dc, section, CSRF.getToken(dc.request).map(t -> t.value()).orElse("no token"))
         );
     }
 
     @AddCSRFToken
-    public Result post(Integer sectionID, Integer postID) {
+    public Result post(Http.Request request, Integer sectionID, Integer postID) {
+        dc.request = request;
         Section section = getSection(sectionID);
 
         Form<Post> postForm = formFactory.form(Post.class);
 
         if (postID != 0) {
-            vm.title = "Update post";
+            dc.title = "Update post";
 
             Post post = Post.find.byId(postID);
             if (post != null) {
@@ -68,20 +70,21 @@ public class AdminPostsController extends Controller {
                 return redirect(routes.AdminPostsController.post(sectionID, 0));
             }
         } else {
-            vm.title = "New post";
+            dc.title = "New post";
         }
 
-        return ok(views.html.admin.posts.post.render(vm, section, postID, postForm, vm.request, vm.messages));
+        return ok(views.html.admin.posts.post.render(dc, section, postID, postForm, dc.request, dc.messages));
     }
 
     @RequireCSRFCheck
-    public Result save(Integer sectionID, Integer postID) {
+    public Result save(Http.Request request, Integer sectionID, Integer postID) {
+        dc.request = request;
         Section section = getSection(sectionID);
 
-        Form<Post> postForm = formFactory.form(Post.class).bindFromRequest(vm.request);
+        Form<Post> postForm = formFactory.form(Post.class).bindFromRequest(dc.request);
 
         if (postForm.hasErrors()) {
-            return badRequest(views.html.admin.posts.post.render(vm, section, postID, postForm, vm.request, vm.messages));
+            return badRequest(views.html.admin.posts.post.render(dc, section, postID, postForm, dc.request, dc.messages));
         } else {
             Post p = postForm.get();
 
@@ -98,7 +101,8 @@ public class AdminPostsController extends Controller {
     }
 
     @RequireCSRFCheck
-    public Result remove(Integer sectionID, Integer postID) {
+    public Result remove(Http.Request request, Integer sectionID, Integer postID) {
+        dc.request = request;
         Post post = Post.find.byId(postID);
         if (post != null) {
             post.delete();
@@ -108,10 +112,11 @@ public class AdminPostsController extends Controller {
     }
 
     @AddCSRFToken
-    public Result comments(Integer sectionID, Integer postID) {
+    public Result comments(Http.Request request, Integer sectionID, Integer postID) {
+        dc.request = request;
         Section section = getSection(sectionID);
 
-        vm.title = "Post comments";
+        dc.title = "Post comments";
 
         Post post = Post.find.byId(postID);
         if (post == null) {
@@ -119,12 +124,13 @@ public class AdminPostsController extends Controller {
         }
 
         return ok(
-                views.html.admin.posts.comments.render(vm, section, post, CSRF.getToken(vm.request).map(t -> t.value()).orElse("no token"), vm.request, vm.messages)
+                views.html.admin.posts.comments.render(dc, section, post, CSRF.getToken(dc.request).map(t -> t.value()).orElse("no token"), dc.request, dc.messages)
         );
     }
 
     @RequireCSRFCheck
-    public Result removeComment(Integer sectionID, Integer commentID) {
+    public Result removeComment(Http.Request request, Integer sectionID, Integer commentID) {
+        dc.request = request;
         Comment comment = Comment.find.byId(commentID);
         if (comment == null) {
             return redirect(routes.AdminPostsController.list(0));
@@ -140,7 +146,8 @@ public class AdminPostsController extends Controller {
     }
 
     @RequireCSRFCheck
-    public Result removeAllComments(Integer sectionID, Integer postID) {
+    public Result removeAllComments(Http.Request request, Integer sectionID, Integer postID) {
+        dc.request = request;
         Post post = Post.find.byId(postID);
         if (post == null) {
             return redirect(routes.AdminPostsController.list(sectionID));

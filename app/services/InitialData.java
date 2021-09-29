@@ -11,18 +11,17 @@ import java.text.SimpleDateFormat;
 
 @Singleton
 public class InitialData {
-    private static InitialData instance = null;
+//    private static InitialData instance = null;
 
-    public static InitialData getInstance()
-    {
-        if(instance==null)
-        {
-            instance = new InitialData();
-        }
-        return instance;
-    }
+//    public static InitialData getInstance()
+//    {
+//        if (instance == null) {
+//            instance = new InitialData();
+//        }
+//        return instance;
+//    }
 
-    private InitialData() {
+    public InitialData() {
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 

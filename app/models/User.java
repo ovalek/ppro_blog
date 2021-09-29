@@ -65,13 +65,13 @@ public class User extends Model {
             password = null;
         }
 
-        Logger.debug("Ale už");
         // hash password
         if (password != null) {
 //            Logger.debug(org.apache.commons.codec.digest.DigestUtils.sha256Hex(email + password));
 //            password = org.apache.commons.codec.digest.DigestUtils.sha256Hex(email + password);
             //TODO: hash
-            Logger.debug(email + password);
+//            Logger.debug(email + password);
+            System.out.println(email + password);
             password = email + password;
         }
 

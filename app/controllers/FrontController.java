@@ -3,11 +3,11 @@ package controllers;
 import models.Comment;
 import models.Post;
 import models.Section;
+import models.view.DependenciesContainer;
 import play.data.Form;
 import play.data.FormFactory;
 import play.filters.csrf.AddCSRFToken;
 import play.filters.csrf.RequireCSRFCheck;
-import play.api.i18n.Messages;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
@@ -20,12 +20,10 @@ public class FrontController extends Controller {
     FormFactory formFactory;
 
     @Inject
-    Http.Request request;
+    DependenciesContainer dc;
 
-    @Inject
-    Messages messages;
-
-    public Result section(String sectionAlias) {
+    public Result section(Http.Request request, String sectionAlias) {
+        dc.request = request;
         Section section = Section.find.query().where().eq("alias", sectionAlias).findOne();
 
         if (section == null) {
@@ -41,7 +39,8 @@ public class FrontController extends Controller {
     }
 
     @AddCSRFToken
-    public Result post(String sectionAlias, Integer postID) {
+    public Result post(Http.Request request, String sectionAlias, Integer postID) {
+        dc.request = request;
         Section section = Section.find.query().where().eq("alias", sectionAlias).findOne();
         if (section == null) {
             section = Section.find.query().where().eq("alias", "").findOne();
@@ -59,11 +58,12 @@ public class FrontController extends Controller {
 
         Form<Comment> commentForm = formFactory.form(Comment.class);
 
-        return ok(views.html.front.post.render(section, post, commentForm, request, messages));
+        return ok(views.html.front.post.render(section, post, commentForm, dc.request, dc.messages));
     }
 
     @RequireCSRFCheck
-    public Result saveComment(String sectionAlias, Integer postID) {
+    public Result saveComment(Http.Request request, String sectionAlias, Integer postID) {
+        dc.request = request;
         Section section = Section.find.query().where().eq("alias", sectionAlias).findOne();
         if (section == null) {
             section = Section.find.query().where().eq("alias", "").findOne();
@@ -79,10 +79,10 @@ public class FrontController extends Controller {
             return redirect(routes.FrontController.section(sectionAlias));
         }
 
-        Form<Comment> commentForm = formFactory.form(Comment.class).bindFromRequest(request);
+        Form<Comment> commentForm = formFactory.form(Comment.class).bindFromRequest(dc.request);
 
         if (commentForm.hasErrors()) {
-            return badRequest(views.html.front.post.render(section, post, commentForm, request, messages));
+            return badRequest(views.html.front.post.render(section, post, commentForm, dc.request, dc.messages));
         } else {
             Comment s = commentForm.get();
             s.post = post;

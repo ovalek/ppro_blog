@@ -1,5 +1,5 @@
 @import b3.vertical.fieldConstructor
-@(form: play.data.Form[AuthController.LoginForm])(implicit request: play.mvc.Http.Request, messages: play.i18n.Messages)
+@(form: play.data.Form[AuthController.LoginForm])(implicit request: play.mvc.Http.Request, messages: Messages)
 @implicitFieldConstructor = @{ b3.vertical.fieldConstructor() }
 <!DOCTYPE html>
 <html>
@@ -54,7 +54,8 @@
             <script>
                 jQuery(document).ready(function($) {
                     @for(error <- form.globalErrors) {
-                        $.my.notify("@error.format(messages)", "error");
+                        @*$.my.notify("@error.format(messages)", "error");*@
+                        $.my.notify("@error", "error");
                     }
                     @*$.my.notify("@{form.globalError.message}", "error");*@
                 });

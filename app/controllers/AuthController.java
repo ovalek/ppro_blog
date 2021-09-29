@@ -1,10 +1,9 @@
 package controllers;
 
 import models.User;
-//import play.data.Form;
+import models.view.DependenciesContainer;
 import play.data.Form;
 import play.data.FormFactory;
-import play.i18n.Messages;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
@@ -18,24 +17,23 @@ public class AuthController extends Controller {
     FormFactory formFactory;
 
     @Inject
-    Http.Request request;
+    DependenciesContainer dc;
 
-    @Inject
-    Messages messages;
-
-    public Result login() {
+    public Result login(Http.Request request) {
+        dc.request = request;
         return ok(
-            login.render(formFactory.form(LoginForm.class), request, messages)
+            login.render(formFactory.form(LoginForm.class), dc.request, dc.messages)
         );
     }
 
-    public Result authenticate() {
+    public Result authenticate(Http.Request request) {
+        dc.request = request;
         //return ok(User.find.all().toString());
 
-        Form<LoginForm> loginForm = formFactory.form(LoginForm.class).bindFromRequest(request);
+        Form<LoginForm> loginForm = formFactory.form(LoginForm.class).bindFromRequest(dc.request);
 
         if (loginForm.hasErrors()) {
-            return badRequest(login.render(loginForm, request, messages));
+            return badRequest(login.render(loginForm, dc.request, dc.messages));
         } else {
 //            session().clear();
             Http.Session newSession = new Http.Session().adding("email", loginForm.get().email);
@@ -45,7 +43,8 @@ public class AuthController extends Controller {
         }
     }
 
-    public Result logout() {
+    public Result logout(Http.Request request) {
+        dc.request = request;
 //        session().clear();
         return redirect(routes.FrontController.section("")).withNewSession();
     }

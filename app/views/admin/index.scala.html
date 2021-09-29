@@ -1,14 +1,14 @@
-@import models.view.AdminViewModel
-@(vm: AdminViewModel)
+@import models.view.DependenciesContainer
+@(dc: DependenciesContainer)
 
 @*
 * Call the `main` template with one argument, that represents
 * global template variables.
 *@
-@admin.main(vm) {
+@admin.main(dc) {
 
     <div class="page-header">
-        <h3>@vm.title</h3>
+        <h3>@dc.title</h3>
     </div>
 
     <div class="btnContainer">

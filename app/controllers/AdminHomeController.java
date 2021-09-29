@@ -1,7 +1,8 @@
 package controllers;
 
-import models.view.AdminViewModel;
+import models.view.DependenciesContainer;
 import play.mvc.Controller;
+import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.Security;
 
@@ -11,11 +12,12 @@ import javax.inject.Inject;
 public class AdminHomeController extends Controller {
 
     @Inject
-    AdminViewModel vm;
+    DependenciesContainer dc;
 
-    public Result index() {
-        vm.title = "Blog administration";
-        return ok(views.html.admin.index.render(vm));
+    public Result index(Http.Request request) {
+        dc.request = request;
+        dc.title = "Blog administration";
+        return ok(views.html.admin.index.render(dc));
     }
 
 }

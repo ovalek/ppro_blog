@@ -1,15 +1,15 @@
-@import models.view.AdminViewModel
+@import models.view.DependenciesContainer
 @import play.filters.csrf.AddCSRFToken
-@(vm: AdminViewModel, sections: java.util.List[Section], csrf: String)(implicit request: play.mvc.Http.Request, messages: Messages)
+@(dc: DependenciesContainer, sections: java.util.List[Section], csrf: String)(implicit request: play.mvc.Http.Request, messages: Messages)
 
 @*
 * Call the `main` template with one argument, that represents
 * global template variables.
 *@
-@admin.main(vm) {
+@admin.main(dc) {
 
     <div class="clearfix page-header">
-        <h3>@vm.title</h3>
+        <h3>@dc.title</h3>
         <div class="pull-right btnContainer">
             <a class="btn btn-default" href="@routes.AdminSectionsController.list">Sections list</a>
         </div>

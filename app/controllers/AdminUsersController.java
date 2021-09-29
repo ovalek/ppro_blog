@@ -1,13 +1,14 @@
 package controllers;
 
 import models.User;
-import models.view.AdminViewModel;
+import models.view.DependenciesContainer;
 import play.data.Form;
 import play.data.FormFactory;
 import play.filters.csrf.AddCSRFToken;
 import play.filters.csrf.CSRF;
 import play.filters.csrf.RequireCSRFCheck;
 import play.mvc.Controller;
+import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.Security;
 import views.html.admin.users.list;
@@ -19,25 +20,27 @@ import java.util.List;
 public class AdminUsersController extends Controller {
 
     @Inject
-    AdminViewModel vm;
+    DependenciesContainer dc;
 
     @Inject
     FormFactory formFactory;
 
     @AddCSRFToken
-    public Result list() {
-        vm.title = "Users";
+    public Result list(Http.Request request) {
+        dc.request = request;
+        dc.title = "Users";
 
         List<User> users = User.find.query().where().orderBy("name ASC").findList();
-        return ok(list.render(vm, users, CSRF.getToken(vm.request).map(t -> t.value()).orElse("no token"), vm.request, vm.messages));
+        return ok(list.render(dc, users, CSRF.getToken(dc.request).map(t -> t.value()).orElse("no token"), dc.request, dc.messages));
     }
 
     @AddCSRFToken
-    public Result user(Integer userID) {
+    public Result user(Http.Request request, Integer userID) {
+        dc.request = request;
         Form<User> userForm = formFactory.form(User.class);
 
         if (userID != 0) {
-            vm.title = "Update user";
+            dc.title = "Update user";
 
             User user = User.find.byId(userID);
             if (user != null) {
@@ -46,24 +49,25 @@ public class AdminUsersController extends Controller {
                 return redirect(routes.AdminUsersController.user(0));
             }
         } else {
-            vm.title = "New user";
+            dc.title = "New user";
         }
 
-        return ok(views.html.admin.users.user.render(vm, userID, userForm, vm.request, vm.messages));
+        return ok(views.html.admin.users.user.render(dc, userID, userForm, dc.request, dc.messages));
     }
 
     @RequireCSRFCheck
-    public Result save(Integer userID) {
-        Form<User> userForm = formFactory.form(User.class).bindFromRequest(vm.request);
+    public Result save(Http.Request request, Integer userID) {
+        dc.request = request;
+        Form<User> userForm = formFactory.form(User.class).bindFromRequest(dc.request);
 
         if (userForm.hasErrors()) {
-            return badRequest(views.html.admin.users.user.render(vm, userID, userForm, vm.request, vm.messages));
+            return badRequest(views.html.admin.users.user.render(dc, userID, userForm, dc.request, dc.messages));
         } else {
             User u = userForm.get();
 
             boolean result = u.saveWithValidation(userID, userForm);
             if (!result) {
-                return badRequest(views.html.admin.users.user.render(vm, userID, userForm, vm.request, vm.messages));
+                return badRequest(views.html.admin.users.user.render(dc, userID, userForm, dc.request, dc.messages));
             }
 
             return redirect(routes.AdminUsersController.list());
@@ -71,11 +75,12 @@ public class AdminUsersController extends Controller {
     }
 
     @RequireCSRFCheck
-    public Result remove(Integer userID) {
+    public Result remove(Http.Request request, Integer userID) {
+        dc.request = request;
         User user = User.find.byId(userID);
         if (user != null) {
 
-            if (vm.session.get("email").equals(user.email)) {
+            if (dc.session.get("email").equals(user.email)) {
                 user.delete();
                 return redirect(routes.FrontController.section("")).withNewSession();
             }

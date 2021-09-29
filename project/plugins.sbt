@@ -13,6 +13,11 @@ addSbtPlugin("com.typesafe.sbt" % "sbt-play-enhancer" % "1.2.2")
 // ebean ORM
 //addSbtPlugin("com.typesafe.sbt" % "sbt-play-ebean" % "6.0.0")
 //addSbtPlugin("com.typesafe.sbt" % "sbt-play-ebean" % "4.1.4")
-addSbtPlugin("com.payintech" % "sbt-play-ebean" % "21.02")
+//addSbtPlugin("com.payintech" % "sbt-play-ebean" % "21.02")
+//addSbtPlugin("com.typesafe.sbt" % "sbt-play-ebean" % "6.1.0-RC2")
+addSbtPlugin("com.typesafe.sbt" % "sbt-play-ebean" % "6.0.0")
+
+//addSbtPlugin("com.h2database" % "h2" % "1.4.195")
+//addSbtPlugin("com.h2database" % "h2" % "1.4.192")
 
 //addSbtPlugin("org.mindrot" % "jbcrypt" % "0.3m")

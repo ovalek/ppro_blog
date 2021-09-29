@@ -1,16 +1,16 @@
-@import models.view.AdminViewModel
+@import models.view.DependenciesContainer
 @import play.i18n._
 @import play.mvc.Http.Request
-@(vm: AdminViewModel, section: Section, csrf: String)
+@(dc: DependenciesContainer, section: Section, csrf: String)
 
 @*
 * Call the `main` template with one argument, that represents
 * global template variables.
 *@
-@admin.main(vm) {
+@admin.main(dc) {
 
     <div class="clearfix page-header">
-        <h3>@vm.title</h3>
+        <h3>@dc.title</h3>
         <!-- section selection -->
         <div class="filterButtons btn-group">
             <a class="btn btn-lg btn-default dropdown-toggle" data-toggle="dropdown" href="@routes.AdminPostsController.list(section.id)">@section.name <span class="caret"></span></a>
