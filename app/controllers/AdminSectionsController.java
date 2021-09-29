@@ -28,7 +28,7 @@ public class AdminSectionsController extends Controller {
 
     @AddCSRFToken
     public Result list(Http.Request request) {
-        dc.request = request;
+        dc.setRequest(request);
         dc.title = "Sections";
 
         return ok(
@@ -38,7 +38,7 @@ public class AdminSectionsController extends Controller {
 
     @AddCSRFToken
     public Result sort(Http.Request request) {
-        dc.request = request;
+        dc.setRequest(request);
         dc.title = "Sort sections";
 
         return ok(
@@ -48,7 +48,7 @@ public class AdminSectionsController extends Controller {
 
     @RequireCSRFCheck
     public Result saveOrder(Http.Request request) {
-        dc.request = request;
+        dc.setRequest(request);
         boolean result;
 
         DynamicForm form = formFactory.form().bindFromRequest(dc.request);
@@ -71,7 +71,7 @@ public class AdminSectionsController extends Controller {
 
     @AddCSRFToken
     public Result section(Http.Request request, Integer sectionID) {
-        dc.request = request;
+        dc.setRequest(request);
         Form<Section> sectionForm = formFactory.form(Section.class);
 
         if (sectionID != 0) {
@@ -92,7 +92,7 @@ public class AdminSectionsController extends Controller {
 
     @RequireCSRFCheck
     public Result save(Http.Request request, Integer sectionID) {
-        dc.request = request;
+        dc.setRequest(request);
         Form<Section> sectionForm = formFactory.form(Section.class).bindFromRequest(dc.request);
 
         if (sectionForm.hasErrors()) {
@@ -111,7 +111,7 @@ public class AdminSectionsController extends Controller {
 
     @RequireCSRFCheck
     public Result remove(Http.Request request, Integer sectionID) {
-        dc.request = request;
+        dc.setRequest(request);
         Section section = Section.find.byId(sectionID);
         if (section != null) {
             section.delete();

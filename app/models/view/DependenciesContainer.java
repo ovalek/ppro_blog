@@ -27,10 +27,10 @@ public class DependenciesContainer {
     public Messages messages;
 
     @Inject
-    public DependenciesContainer(Http.Session session, MessagesApi messagesApi) {
+    public DependenciesContainer(MessagesApi messagesApi) {
 //    public DependenciesContainer(Http.Request request, Http.Session session, MessagesApi messagesApi, MessagesProvider messagesProvider, Lang lang) {
 //        this.request = request;
-        this.session = session;
+//        this.session = session;
         this.messagesApi = messagesApi;
 //        this.messagesProvider = messagesProvider;
         this.messages = new MessagesImpl(new Lang(new Locale("en", "en", "en")), messagesApi);
@@ -39,6 +39,16 @@ public class DependenciesContainer {
     //public User user = User.find.where().eq("email", session.get("email")).findUnique();
 
     //public User user = User.find.where().eq("email", context.current().session.get("email")).findUnique();
+
+
+    public void setRequest(Http.Request request) {
+        this.request = request;
+        this.session = request.session();
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
     public String title;
 }

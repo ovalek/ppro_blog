@@ -56,7 +56,8 @@
                         </ul>
 
                         <ul class="nav navbar-nav navbar-right">
-                            <li><a title="Přihlášený uživatel"><span class="glyphicon glyphicon-user"></span><span class="hidden-md hidden-sm">@User.find.query().where().eq("email", dc.session.get("email")).setMaxRows(1).findOne().name</span></a></li>
+@*                            <li><a title="Přihlášený uživatel"><span class="glyphicon glyphicon-user"></span><span class="hidden-md hidden-sm">@User.find.query().where().eq("email", dc.session.get("email")).setMaxRows(1).findOne().name</span></a></li>*@
+                            <li><a title="Přihlášený uživatel"><span class="glyphicon glyphicon-user"></span><span class="hidden-md hidden-sm">@dc.session.get("email")</span></a></li>
                             <li><a title="Odhlásit se" rel="nofollow" href="@routes.AuthController.logout"><span class="glyphicon glyphicon-log-out"></span><span class="hidden-md hidden-sm">Odhlásit se</span></a></li>
                         </ul>
                     </div>

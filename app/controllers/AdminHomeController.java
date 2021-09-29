@@ -15,7 +15,7 @@ public class AdminHomeController extends Controller {
     DependenciesContainer dc;
 
     public Result index(Http.Request request) {
-        dc.request = request;
+        dc.setRequest(request);
         dc.title = "Blog administration";
         return ok(views.html.admin.index.render(dc));
     }

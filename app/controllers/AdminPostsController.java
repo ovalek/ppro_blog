@@ -43,7 +43,7 @@ public class AdminPostsController extends Controller {
 
     @AddCSRFToken
     public Result list(Http.Request request, Integer sectionID) {
-        dc.request = request;
+        dc.setRequest(request);
         dc.title = "Posts";
 
         Section section = getSection(sectionID);
@@ -55,7 +55,7 @@ public class AdminPostsController extends Controller {
 
     @AddCSRFToken
     public Result post(Http.Request request, Integer sectionID, Integer postID) {
-        dc.request = request;
+        dc.setRequest(request);
         Section section = getSection(sectionID);
 
         Form<Post> postForm = formFactory.form(Post.class);
@@ -78,7 +78,7 @@ public class AdminPostsController extends Controller {
 
     @RequireCSRFCheck
     public Result save(Http.Request request, Integer sectionID, Integer postID) {
-        dc.request = request;
+        dc.setRequest(request);
         Section section = getSection(sectionID);
 
         Form<Post> postForm = formFactory.form(Post.class).bindFromRequest(dc.request);
@@ -102,7 +102,7 @@ public class AdminPostsController extends Controller {
 
     @RequireCSRFCheck
     public Result remove(Http.Request request, Integer sectionID, Integer postID) {
-        dc.request = request;
+        dc.setRequest(request);
         Post post = Post.find.byId(postID);
         if (post != null) {
             post.delete();
@@ -113,7 +113,7 @@ public class AdminPostsController extends Controller {
 
     @AddCSRFToken
     public Result comments(Http.Request request, Integer sectionID, Integer postID) {
-        dc.request = request;
+        dc.setRequest(request);
         Section section = getSection(sectionID);
 
         dc.title = "Post comments";
@@ -130,7 +130,7 @@ public class AdminPostsController extends Controller {
 
     @RequireCSRFCheck
     public Result removeComment(Http.Request request, Integer sectionID, Integer commentID) {
-        dc.request = request;
+        dc.setRequest(request);
         Comment comment = Comment.find.byId(commentID);
         if (comment == null) {
             return redirect(routes.AdminPostsController.list(0));
@@ -147,7 +147,7 @@ public class AdminPostsController extends Controller {
 
     @RequireCSRFCheck
     public Result removeAllComments(Http.Request request, Integer sectionID, Integer postID) {
-        dc.request = request;
+        dc.setRequest(request);
         Post post = Post.find.byId(postID);
         if (post == null) {
             return redirect(routes.AdminPostsController.list(sectionID));

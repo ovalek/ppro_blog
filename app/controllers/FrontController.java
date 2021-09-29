@@ -23,7 +23,7 @@ public class FrontController extends Controller {
     DependenciesContainer dc;
 
     public Result section(Http.Request request, String sectionAlias) {
-        dc.request = request;
+        dc.setRequest(request);
         Section section = Section.find.query().where().eq("alias", sectionAlias).findOne();
 
         if (section == null) {
@@ -40,7 +40,7 @@ public class FrontController extends Controller {
 
     @AddCSRFToken
     public Result post(Http.Request request, String sectionAlias, Integer postID) {
-        dc.request = request;
+        dc.setRequest(request);
         Section section = Section.find.query().where().eq("alias", sectionAlias).findOne();
         if (section == null) {
             section = Section.find.query().where().eq("alias", "").findOne();
@@ -63,7 +63,7 @@ public class FrontController extends Controller {
 
     @RequireCSRFCheck
     public Result saveComment(Http.Request request, String sectionAlias, Integer postID) {
-        dc.request = request;
+        dc.setRequest(request);
         Section section = Section.find.query().where().eq("alias", sectionAlias).findOne();
         if (section == null) {
             section = Section.find.query().where().eq("alias", "").findOne();

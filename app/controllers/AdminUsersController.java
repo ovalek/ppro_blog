@@ -27,7 +27,7 @@ public class AdminUsersController extends Controller {
 
     @AddCSRFToken
     public Result list(Http.Request request) {
-        dc.request = request;
+        dc.setRequest(request);
         dc.title = "Users";
 
         List<User> users = User.find.query().where().orderBy("name ASC").findList();
@@ -36,7 +36,7 @@ public class AdminUsersController extends Controller {
 
     @AddCSRFToken
     public Result user(Http.Request request, Integer userID) {
-        dc.request = request;
+        dc.setRequest(request);
         Form<User> userForm = formFactory.form(User.class);
 
         if (userID != 0) {
@@ -57,7 +57,7 @@ public class AdminUsersController extends Controller {
 
     @RequireCSRFCheck
     public Result save(Http.Request request, Integer userID) {
-        dc.request = request;
+        dc.setRequest(request);
         Form<User> userForm = formFactory.form(User.class).bindFromRequest(dc.request);
 
         if (userForm.hasErrors()) {
@@ -76,7 +76,7 @@ public class AdminUsersController extends Controller {
 
     @RequireCSRFCheck
     public Result remove(Http.Request request, Integer userID) {
-        dc.request = request;
+        dc.setRequest(request);
         User user = User.find.byId(userID);
         if (user != null) {
 
