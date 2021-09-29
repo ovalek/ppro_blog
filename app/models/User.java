@@ -12,6 +12,7 @@ import play.data.validation.ValidationError;
 //import t3hnar
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 public class User extends Model {
@@ -35,9 +36,12 @@ public class User extends Model {
     public static User authenticate(String email, String password) {
         if (email == null && password == null) return null;
 
-        String hash = BCrypt.hashpw(password, BCrypt.gensalt(12));
-
-        return User.find.query().where().eq("email", email).eq("password", hash).findOne();
+        User user = User.find.query().where().eq("email", email).findOne();
+        if (Objects.nonNull(user) && BCrypt.checkpw(password, user.password)) {
+            return user;
+        } else {
+            return null;
+        }
     }
 
     @Transactional
