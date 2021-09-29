@@ -8,55 +8,55 @@ GET     /assets/*file        controllers.Assets.versioned(path="/public", file: 
 
 
 # login
-GET     /login/               controllers.AuthController.login()
-POST    /login/               controllers.AuthController.authenticate()
+GET     /login/               controllers.AuthController.login(request: Request)
+POST    /login/               controllers.AuthController.authenticate(request: Request)
 # logout
-GET     /logout/             controllers.AuthController.logout()
+GET     /logout/             controllers.AuthController.logout(request: Request)
 
 
 
 # admin homepage
-GET     /admin/               controllers.AdminHomeController.index()
+GET     /admin/               controllers.AdminHomeController.index(request: Request)
 
 # posts
-GET   /admin/posts/           controllers.AdminPostsController.list(id:java.lang.Integer = 0)
-GET   /admin/posts/:id/        controllers.AdminPostsController.list(id:java.lang.Integer)
+GET   /admin/posts/           controllers.AdminPostsController.list(request: Request, id:java.lang.Integer = 0)
+GET   /admin/posts/:id/        controllers.AdminPostsController.list(request: Request, id:java.lang.Integer)
 
 # post form
-GET   /admin/posts/post/:id/:postID/        controllers.AdminPostsController.post(id:java.lang.Integer, postID:java.lang.Integer)
-POST  /admin/posts/post/:id/:postID/        controllers.AdminPostsController.save(id:java.lang.Integer, postID:java.lang.Integer)
-GET   /admin/posts/post/remove/:id/:postID/ controllers.AdminPostsController.remove(id:java.lang.Integer, postID:java.lang.Integer)
+GET   /admin/posts/post/:id/:postID/        controllers.AdminPostsController.post(request: Request, id:java.lang.Integer, postID:java.lang.Integer)
+POST  /admin/posts/post/:id/:postID/        controllers.AdminPostsController.save(request: Request, id:java.lang.Integer, postID:java.lang.Integer)
+GET   /admin/posts/post/remove/:id/:postID/ controllers.AdminPostsController.remove(request: Request, id:java.lang.Integer, postID:java.lang.Integer)
 
 # post comments
-GET   /admin/posts/comments/:sectionID/:postID/                     controllers.AdminPostsController.comments(sectionID:java.lang.Integer, postID:java.lang.Integer)
-GET   /admin/posts/comments-remove/:sectionID/:commentID/           controllers.AdminPostsController.removeComment(sectionID:java.lang.Integer, commentID:java.lang.Integer)
-GET   /admin/posts/comments-remove-all/:sectionID/:postID/          controllers.AdminPostsController.removeAllComments(sectionID:java.lang.Integer, postID:java.lang.Integer)
+GET   /admin/posts/comments/:sectionID/:postID/                     controllers.AdminPostsController.comments(request: Request, sectionID:java.lang.Integer, postID:java.lang.Integer)
+GET   /admin/posts/comments-remove/:sectionID/:commentID/           controllers.AdminPostsController.removeComment(request: Request, sectionID:java.lang.Integer, commentID:java.lang.Integer)
+GET   /admin/posts/comments-remove-all/:sectionID/:postID/          controllers.AdminPostsController.removeAllComments(request: Request, sectionID:java.lang.Integer, postID:java.lang.Integer)
 
 
 # sections
-GET   /admin/sections/                controllers.AdminSectionsController.list()
-GET   /admin/sections/sort/           controllers.AdminSectionsController.sort()
-POST  /admin/sections/save-order/     controllers.AdminSectionsController.saveOrder()
+GET   /admin/sections/                controllers.AdminSectionsController.list(request: Request)
+GET   /admin/sections/sort/           controllers.AdminSectionsController.sort(request: Request)
+POST  /admin/sections/save-order/     controllers.AdminSectionsController.saveOrder(request: Request)
 
 # section form
-GET   /admin/section/:sectionID/        controllers.AdminSectionsController.section(sectionID:java.lang.Integer)
-POST  /admin/section/:sectionID/        controllers.AdminSectionsController.save(sectionID:java.lang.Integer)
-GET   /admin/section/remove/:sectionID/ controllers.AdminSectionsController.remove(sectionID:java.lang.Integer)
+GET   /admin/section/:sectionID/        controllers.AdminSectionsController.section(request: Request, sectionID:java.lang.Integer)
+POST  /admin/section/:sectionID/        controllers.AdminSectionsController.save(request: Request, sectionID:java.lang.Integer)
+GET   /admin/section/remove/:sectionID/ controllers.AdminSectionsController.remove(request: Request, sectionID:java.lang.Integer)
 
 
 # users
-GET   /admin/users/                     controllers.AdminUsersController.list()
+GET   /admin/users/                     controllers.AdminUsersController.list(request: Request)
 
 # user form
-GET   /admin/users/:userID/             controllers.AdminUsersController.user(userID:java.lang.Integer)
-POST  /admin/users/:userID/             controllers.AdminUsersController.save(userID:java.lang.Integer)
-GET   /admin/users/remove/:userID/      controllers.AdminUsersController.remove(userID:java.lang.Integer)
+GET   /admin/users/:userID/             controllers.AdminUsersController.user(request: Request, userID:java.lang.Integer)
+POST  /admin/users/:userID/             controllers.AdminUsersController.save(request: Request, userID:java.lang.Integer)
+GET   /admin/users/remove/:userID/      controllers.AdminUsersController.remove(request: Request, userID:java.lang.Integer)
 
 
 # front
-GET    /                                controllers.FrontController.section(sectionAlias:String = "")
-GET    /:sectionAlias/                  controllers.FrontController.section(sectionAlias:String)
-GET    /post/:postID/                   controllers.FrontController.post(sectionAlias:String = "", postID:Integer)
-GET    /post/:sectionAlias/:postID/     controllers.FrontController.post(sectionAlias:String, postID:Integer)
-POST   /post/save-comment/:postID/                   controllers.FrontController.saveComment(sectionAlias:String = "", postID:Integer)
-POST   /post/save-comment/:sectionAlias/:postID/     controllers.FrontController.saveComment(sectionAlias:String, postID:Integer)
+GET    /                                controllers.FrontController.section(request: Request, sectionAlias:String = "")
+GET    /:sectionAlias/                  controllers.FrontController.section(request: Request, sectionAlias:String)
+GET    /post/:postID/                   controllers.FrontController.post(request: Request, sectionAlias:String = "", postID:Integer)
+GET    /post/:sectionAlias/:postID/     controllers.FrontController.post(request: Request, sectionAlias:String, postID:Integer)
+POST   /post/save-comment/:postID/                   controllers.FrontController.saveComment(request: Request, sectionAlias:String = "", postID:Integer)
+POST   /post/save-comment/:sectionAlias/:postID/     controllers.FrontController.saveComment(request: Request, sectionAlias:String, postID:Integer)

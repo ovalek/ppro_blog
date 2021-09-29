@@ -1,5 +1,6 @@
 package services;
 
+import com.github.t3hnar.bcrypt.BCrypt;
 import io.ebean.*;
 import models.Comment;
 import models.Post;
