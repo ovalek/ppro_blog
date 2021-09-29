@@ -28,8 +28,8 @@ public class AdminUsersController extends Controller {
     public Result list() {
         vm.title = "Users";
 
-        List<User> users = User.find.where().orderBy("name ASC").findList();
-        return ok(list.render(vm, users, CSRF.getToken(request()).map(t -> t.value()).orElse("no token")));
+        List<User> users = User.find.query().where().orderBy("name ASC").findList();
+        return ok(list.render(vm, users, CSRF.getToken(vm.request).map(t -> t.value()).orElse("no token"), vm.request, vm.messages));
     }
 
     @AddCSRFToken
@@ -49,21 +49,21 @@ public class AdminUsersController extends Controller {
             vm.title = "New user";
         }
 
-        return ok(views.html.admin.users.user.render(vm, userID, userForm));
+        return ok(views.html.admin.users.user.render(vm, userID, userForm, vm.request, vm.messages));
     }
 
     @RequireCSRFCheck
     public Result save(Integer userID) {
-        Form<User> userForm = formFactory.form(User.class).bindFromRequest();
+        Form<User> userForm = formFactory.form(User.class).bindFromRequest(vm.request);
 
         if (userForm.hasErrors()) {
-            return badRequest(views.html.admin.users.user.render(vm, userID, userForm));
+            return badRequest(views.html.admin.users.user.render(vm, userID, userForm, vm.request, vm.messages));
         } else {
             User u = userForm.get();
 
             boolean result = u.saveWithValidation(userID, userForm);
             if (!result) {
-                return badRequest(views.html.admin.users.user.render(vm, userID, userForm));
+                return badRequest(views.html.admin.users.user.render(vm, userID, userForm, vm.request, vm.messages));
             }
 
             return redirect(routes.AdminUsersController.list());
@@ -75,10 +75,9 @@ public class AdminUsersController extends Controller {
         User user = User.find.byId(userID);
         if (user != null) {
 
-            if (session("email").equals(user.email)) {
+            if (vm.session.get("email").equals(user.email)) {
                 user.delete();
-                session().clear();
-                return redirect(routes.FrontController.section(""));
+                return redirect(routes.FrontController.section("")).withNewSession();
             }
 
             user.delete();

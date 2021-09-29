@@ -1,5 +1,7 @@
 @import models.view.AdminViewModel
-@(vm: AdminViewModel, section: Section, csrf: String)(implicit request: play.mvc.Http.Request, messages: Messages)
+@import play.i18n._
+@import play.mvc.Http.Request
+@(vm: AdminViewModel, section: Section, csrf: String)
 
 @*
 * Call the `main` template with one argument, that represents

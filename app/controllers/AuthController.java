@@ -1,9 +1,12 @@
 package controllers;
 
 import models.User;
+//import play.data.Form;
 import play.data.Form;
 import play.data.FormFactory;
+import play.i18n.Messages;
 import play.mvc.Controller;
+import play.mvc.Http;
 import play.mvc.Result;
 import views.html.login;
 
@@ -14,31 +17,37 @@ public class AuthController extends Controller {
     @Inject
     FormFactory formFactory;
 
+    @Inject
+    Http.Request request;
+
+    @Inject
+    Messages messages;
+
     public Result login() {
         return ok(
-            login.render(formFactory.form(LoginForm.class))
+            login.render(formFactory.form(LoginForm.class), request, messages)
         );
     }
 
     public Result authenticate() {
         //return ok(User.find.all().toString());
 
-        Form<LoginForm> loginForm = formFactory.form(LoginForm.class).bindFromRequest();
+        Form<LoginForm> loginForm = formFactory.form(LoginForm.class).bindFromRequest(request);
 
         if (loginForm.hasErrors()) {
-            return badRequest(login.render(loginForm));
+            return badRequest(login.render(loginForm, request, messages));
         } else {
-            session().clear();
-            session("email", loginForm.get().email);
+//            session().clear();
+            Http.Session newSession = new Http.Session().adding("email", loginForm.get().email);
             return redirect(
                     routes.AdminHomeController.index()
-            );
+            ).withSession(newSession);
         }
     }
 
     public Result logout() {
-        session().clear();
-        return redirect(routes.FrontController.section(""));
+//        session().clear();
+        return redirect(routes.FrontController.section("")).withNewSession();
     }
 
 

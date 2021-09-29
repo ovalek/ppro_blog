@@ -1,7 +1,7 @@
 package models;
 
 import io.ebean.*;
-import com.avaje.ebean.annotation.CreatedTimestamp;
+import io.ebean.annotation.CreatedTimestamp;
 import play.data.validation.Constraints;
 
 import javax.persistence.*;

@@ -1,7 +1,7 @@
 @import models.view.AdminViewModel
 @import b3.horizontal.fieldConstructor
 @import views.html.helper.CSRF
-@(vm: AdminViewModel, section: Section, postID: Integer, form: play.data.Form[Post])(implicit request: play.mvc.Http.Request, messages: Messages)
+@(vm: AdminViewModel, section: Section, postID: Integer, form: play.data.Form[Post])(implicit request: play.mvc.Http.Request, messages: play.api.i18n.Messages)
 
 @implicitFieldConstructor = @{ b3.horizontal.fieldConstructor("col-sm-4", "col-sm-8") }
 

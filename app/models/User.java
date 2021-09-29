@@ -2,10 +2,13 @@ package models;
 
 //import com.avaje.ebean.Model;
 import io.ebean.*;
+import io.ebean.annotation.Transactional;
 import play.Logger;
 import play.data.Form;
 import play.data.validation.Constraints;
-import play.db.ebean.Transactional;
+import play.data.validation.ValidationError;
+//import com.github.t3hnar.bcrypt;
+//import t3hnar
 
 import javax.persistence.*;
 
@@ -32,25 +35,31 @@ public class User extends Model {
         if (email == null && password == null) return null;
 
         password = email + password;
-        String sha256hex = org.apache.commons.codec.digest.DigestUtils.sha256Hex(password);
+//        bcrypt
+//        String sha256hex = org.apache.commons.codec.digest.DigestUtils.sha256Hex(password);
+//        bcrypt
+//        String sha256hex = HashHelper.createPassword(password);
 
-        return User.find.where().eq("email", email).eq("password", sha256hex).findUnique();
+        // TODO: fixme add hash (https://index.scala-lang.org/t3hnar/scala-bcrypt/scala-bcrypt/4.3.0?target=_2.13)
+        String sha256hex = password;
+
+        return User.find.query().where().eq("email", email).eq("password", sha256hex).findOne();
     }
 
     @Transactional
     public boolean saveWithValidation(Integer userID, Form<User> form) {
         // check email
-        if (User.find.where().eq("email", email).ne("id", userID).findRowCount() != 0) {
-            form.reject("email", "Email must be unique.");
+        if (User.find.query().where().eq("email", email).ne("id", userID).findCount() != 0) {
+            form.errors().add(new ValidationError("email", "Email must be unique."));
             return false;
         }
 
         // force password
         if (password.isEmpty() && userID == 0) {
-            form.reject("password", "Password must be specified.");
+            form.errors().add(new ValidationError("password", "Password must be specified."));
             return false;
         } else if (password.isEmpty() && !User.find.byId(userID).email.equals(email)) {
-            form.reject("email", "When you change the email, you must also fill the new password.");
+            form.errors().add(new ValidationError("email", "When you change the email, you must also fill the new password."));
             return false;
         } else if (password.isEmpty()) {
             password = null;
@@ -59,8 +68,11 @@ public class User extends Model {
         Logger.debug("Ale už");
         // hash password
         if (password != null) {
-            Logger.debug(org.apache.commons.codec.digest.DigestUtils.sha256Hex(email + password));
-            password = org.apache.commons.codec.digest.DigestUtils.sha256Hex(email + password);
+//            Logger.debug(org.apache.commons.codec.digest.DigestUtils.sha256Hex(email + password));
+//            password = org.apache.commons.codec.digest.DigestUtils.sha256Hex(email + password);
+            //TODO: hash
+            Logger.debug(email + password);
+            password = email + password;
         }
 
         if (userID != 0) {

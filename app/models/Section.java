@@ -2,12 +2,14 @@ package models;
 
 import io.ebean.*;
 import com.fasterxml.jackson.databind.JsonNode;
+import io.ebean.annotation.Transactional;
 import play.data.Form;
 import play.data.validation.Constraints;
-import play.db.ebean.Transactional;
+import play.data.validation.ValidationError;
 import play.libs.Json;
 
 import javax.persistence.*;
+import javax.persistence.OrderBy;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -38,14 +40,14 @@ public class Section extends Model {
     @Transactional
     public boolean saveWithValidation(Integer sectionID, Form<Section> form) {
         // check name
-        if (Section.find.where().eq("name", name).ne("id", sectionID).findRowCount() != 0){
-            form.reject("name", "Name must be unique.");
+        if (Section.find.query().where().eq("name", name).ne("id", sectionID).findCount() != 0){
+            form.errors().add(new ValidationError("name", "Name must be unique."));
             return false;
         }
 
         // check alias
-        if (Section.find.where().eq("alias", alias).ne("id", sectionID).findRowCount() != 0){
-            form.reject("alias", "Alias must be unique.");
+        if (Section.find.query().where().eq("alias", alias).ne("id", sectionID).findCount() != 0){
+            form.errors().add(new ValidationError("alias", "Alias must be unique."));
             return false;
         }
 
@@ -53,7 +55,7 @@ public class Section extends Model {
             id = sectionID;
             update();
         } else {
-            int maxOrder = find.setMaxRows(1).select("MAX(menu_order)").findUnique().menu_order;
+            int maxOrder = find.query().setMaxRows(1).select("MAX(menu_order)").findOne().menu_order;
             menu_order = ++maxOrder;
             save();
         }

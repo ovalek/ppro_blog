@@ -30,7 +30,7 @@ public class AdminSectionsController extends Controller {
         vm.title = "Sections";
 
         return ok(
-                list.render(vm, Section.find.where().orderBy("menu_order ASC").findList(), CSRF.getToken(request()).map(t -> t.value()).orElse("no token"))
+                list.render(vm, Section.find.query().where().orderBy("menu_order ASC").findList(), CSRF.getToken(vm.request).map(t -> t.value()).orElse("no token"), vm.request, vm.messages)
         );
     }
 
@@ -39,7 +39,7 @@ public class AdminSectionsController extends Controller {
         vm.title = "Sort sections";
 
         return ok(
-                views.html.admin.sections.sort.render(vm, Section.find.where().orderBy("menu_order ASC").findList(), CSRF.getToken(request()).map(t -> t.value()).orElse("no token"))
+                views.html.admin.sections.sort.render(vm, Section.find.query().where().orderBy("menu_order ASC").findList(), CSRF.getToken(vm.request).map(t -> t.value()).orElse("no token"), vm.request, vm.messages)
         );
     }
 
@@ -47,8 +47,8 @@ public class AdminSectionsController extends Controller {
     public Result saveOrder() {
         boolean result;
 
-        DynamicForm form = formFactory.form().bindFromRequest();
-        if (form.data().size() == 0) {
+        DynamicForm form = formFactory.form().bindFromRequest(vm.request);
+        if (form.rawData().size() == 0) {
             result = false;
         } else {
             result = Section.saveOrder(form.get("serializedOrder"));
@@ -82,21 +82,21 @@ public class AdminSectionsController extends Controller {
             vm.title = "New section";
         }
 
-        return ok(views.html.admin.sections.section.render(vm, sectionID, sectionForm));
+        return ok(views.html.admin.sections.section.render(vm, sectionID, sectionForm, vm.request, vm.messages));
     }
 
     @RequireCSRFCheck
     public Result save(Integer sectionID) {
-        Form<Section> sectionForm = formFactory.form(Section.class).bindFromRequest();
+        Form<Section> sectionForm = formFactory.form(Section.class).bindFromRequest(vm.request);
 
         if (sectionForm.hasErrors()) {
-            return badRequest(views.html.admin.sections.section.render(vm, sectionID, sectionForm));
+            return badRequest(views.html.admin.sections.section.render(vm, sectionID, sectionForm, vm.request, vm.messages));
         } else {
             Section s = sectionForm.get();
 
             boolean result = s.saveWithValidation(sectionID, sectionForm);
             if (!result) {
-                return badRequest(views.html.admin.sections.section.render(vm, sectionID, sectionForm));
+                return badRequest(views.html.admin.sections.section.render(vm, sectionID, sectionForm, vm.request, vm.messages));
             }
 
             return redirect(routes.AdminSectionsController.list());

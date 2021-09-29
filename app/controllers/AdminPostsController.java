@@ -9,6 +9,7 @@ import play.data.FormFactory;
 import play.filters.csrf.AddCSRFToken;
 import play.filters.csrf.CSRF;
 import play.filters.csrf.RequireCSRFCheck;
+import play.api.i18n.Messages;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
@@ -28,7 +29,7 @@ public class AdminPostsController extends Controller {
     private Section getSection(Integer sectionID) {
         Section section = null;
 
-        if (sectionID == 0 && Section.find.findRowCount() > 0) {
+        if (sectionID == 0 && Section.find.query().findCount() > 0) {
             section = Section.find.all().get(0);
             redirect(routes.AdminPostsController.list(Integer.valueOf(section.id)));
         } else if (sectionID == 0) {
@@ -47,7 +48,7 @@ public class AdminPostsController extends Controller {
         Section section = getSection(sectionID);
 
         return ok(
-                list.render(vm, section, CSRF.getToken(request()).map(t -> t.value()).orElse("no token"))
+                list.render(vm, section, CSRF.getToken(vm.request).map(t -> t.value()).orElse("no token"))
         );
     }
 
@@ -70,17 +71,17 @@ public class AdminPostsController extends Controller {
             vm.title = "New post";
         }
 
-        return ok(views.html.admin.posts.post.render(vm, section, postID, postForm));
+        return ok(views.html.admin.posts.post.render(vm, section, postID, postForm, vm.request, vm.messages));
     }
 
     @RequireCSRFCheck
     public Result save(Integer sectionID, Integer postID) {
         Section section = getSection(sectionID);
 
-        Form<Post> postForm = formFactory.form(Post.class).bindFromRequest();
+        Form<Post> postForm = formFactory.form(Post.class).bindFromRequest(vm.request);
 
         if (postForm.hasErrors()) {
-            return badRequest(views.html.admin.posts.post.render(vm, section, postID, postForm));
+            return badRequest(views.html.admin.posts.post.render(vm, section, postID, postForm, vm.request, vm.messages));
         } else {
             Post p = postForm.get();
 
@@ -118,7 +119,7 @@ public class AdminPostsController extends Controller {
         }
 
         return ok(
-                views.html.admin.posts.comments.render(vm, section, post, CSRF.getToken(request()).map(t -> t.value()).orElse("no token"))
+                views.html.admin.posts.comments.render(vm, section, post, CSRF.getToken(vm.request).map(t -> t.value()).orElse("no token"), vm.request, vm.messages)
         );
     }
 
@@ -145,7 +146,7 @@ public class AdminPostsController extends Controller {
             return redirect(routes.AdminPostsController.list(sectionID));
         }
 
-        int deletedRows = Comment.find.where().eq("post_id", (int) postID).delete();
+        int deletedRows = Comment.find.query().where().eq("post_id", (int) postID).delete();
 
         return redirect(routes.AdminPostsController.comments(sectionID, postID));
     }

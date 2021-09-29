@@ -1,6 +1,6 @@
 package services;
 
-import com.avaje.ebean.Ebean;
+import io.ebean.*;
 import models.Comment;
 import models.Post;
 import models.Section;
@@ -26,12 +26,14 @@ public class InitialData {
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 
-        if (Ebean.find(User.class).findRowCount() == 0) {
+        if (Ebean.find(User.class).findCount() == 0) {
             User u1 = new User();
             u1.id = 1;
             u1.email = "admin@nekde.cz";
             u1.name = "Admin";
-            u1.password = org.apache.commons.codec.digest.DigestUtils.sha256Hex("admin@nekde.cz" + "password");
+            //TODO: hash
+//            u1.password = org.apache.commons.codec.digest.DigestUtils.sha256Hex("admin@nekde.cz" + "password");
+            u1.password = "admin@nekde.cz" + "password";
             u1.save();
 /*            SqlUpdate insert = Ebean.createSqlUpdate(
                     "INSERT INTO user (email, name, password) VALUES ('admin@nekde.cz', 'Admin', '"
@@ -40,7 +42,7 @@ public class InitialData {
             insert.execute();*/
         }
 
-        if (Ebean.find(Section.class).findRowCount() == 0) {
+        if (Ebean.find(Section.class).findCount() == 0) {
             Section s1 = new Section();
             s1.id = 1;
             s1.name = "Homepage";
@@ -82,7 +84,7 @@ public class InitialData {
             insert.execute();*/
         }
 
-        if (Ebean.find(Post.class).findRowCount() == 0) {
+        if (Ebean.find(Post.class).findCount() == 0) {
             Post p1 = new Post();
             p1.id = 1;
             p1.section = Section.find.byId(1);
@@ -124,7 +126,7 @@ public class InitialData {
             insert.execute();*/
         }
 
-        if (Ebean.find(Comment.class).findRowCount() == 0) {
+        if (Ebean.find(Comment.class).findCount() == 0) {
             Comment c1 = new Comment();
             c1.name = "Lisa Simpson";
             c1.post = Post.find.byId(1);

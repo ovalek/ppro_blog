@@ -14,3 +14,5 @@ addSbtPlugin("com.typesafe.sbt" % "sbt-play-enhancer" % "1.2.2")
 //addSbtPlugin("com.typesafe.sbt" % "sbt-play-ebean" % "6.0.0")
 //addSbtPlugin("com.typesafe.sbt" % "sbt-play-ebean" % "4.1.4")
 addSbtPlugin("com.payintech" % "sbt-play-ebean" % "21.02")
+
+//addSbtPlugin("org.mindrot" % "jbcrypt" % "0.3m")

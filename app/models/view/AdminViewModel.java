@@ -1,6 +1,9 @@
 package models.view;
 
+import play.api.i18n.Messages;
 import play.mvc.Http;
+
+import javax.inject.Inject;
 
 public class AdminViewModel {
 
@@ -16,10 +19,13 @@ public class AdminViewModel {
 
     public Http.Session session;
 
+    public Messages messages;
+
     @Inject
-    public AdminViewModel (Http.Request request, Http.Session session) {
+    public AdminViewModel (Http.Request request, Http.Session session, Messages messages) {
         this.request = request;
         this.session = session;
+        this.messages = messages;
     }
 
     //public User user = User.find.where().eq("email", session.get("email")).findUnique();
