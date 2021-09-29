@@ -1,4 +1,5 @@
 @import b3.vertical.fieldConstructor
+@import views.html.helper.CSRF
 @(form: play.data.Form[AuthController.LoginForm])(implicit request: play.mvc.Http.Request, messages: Messages)
 @implicitFieldConstructor = @{ b3.vertical.fieldConstructor() }
 <!DOCTYPE html>
@@ -28,7 +29,7 @@
                 <div class="panel-body">
                     <fieldset>
                         <legend>Sign in</legend>
-                        @b3.form(routes.AuthController.authenticate) {
+                        @b3.form(CSRF(routes.AuthController.authenticate())) {
                             @b3.email( form("email"), '_label -> "Login", 'placeholder -> "login@somewhere.com" )
                             @b3.password( form("password"), '_label -> "Password" )
                             @b3.submit('class -> "btn btn-primary"){ <span class="glyphicon glyphicon-log-in margin-right"></span> Sign in }
@@ -55,7 +56,7 @@
                 jQuery(document).ready(function($) {
                     @for(error <- form.globalErrors) {
                         @*$.my.notify("@error.format(messages)", "error");*@
-                        $.my.notify("@error", "error");
+                        $.my.notify("@error.message", "error");
                     }
                     @*$.my.notify("@{form.globalError.message}", "error");*@
                 });
