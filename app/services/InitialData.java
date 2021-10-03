@@ -1,14 +1,12 @@
 package services;
 
 import io.ebean.*;
-import models.Comment;
-import models.Post;
-import models.Section;
-import models.User;
+import models.*;
 import org.mindrot.jbcrypt.BCrypt;
 
 import javax.inject.Singleton;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 
 @Singleton
 public class InitialData {
@@ -82,6 +80,27 @@ public class InitialData {
             insert.execute();*/
         }
 
+        if (Ebean.find(Tag.class).findCount() == 0) {
+            Tag t1 = new Tag();
+            t1.id = 1;
+            t1.name = "Tohle je super článek";
+            t1.color = "#0000FF";
+            t1.alias = "Super";
+            t1.save();
+            Tag t2 = new Tag();
+            t2.id = 2;
+            t2.name = "Tohle je špatný článek";
+            t2.color = "#ff0000";
+            t2.alias = "Špatný";
+            t2.save();
+            Tag t3 = new Tag();
+            t3.id = 3;
+            t3.name = "Hustodémonskykrutopřísný";
+            t3.color = "#00ff00";
+            t3.alias = "HDKP";
+            t3.save();
+        }
+
         if (Ebean.find(Post.class).findCount() == 0) {
             Post p1 = new Post();
             p1.id = 1;
@@ -100,6 +119,7 @@ public class InitialData {
             p3.section = Section.find.byId(1);
             p3.title = "Homepage post #3";
             p3.content = "Příliš <strong>žluťoučký kůň</strong> <em>úpěl</em> <s>ďábelské</s> ódy.";
+            p3.tags = Tag.find.query().where().eq("id", 1).or().eq("id", 3).findList();
             p3.save();
             Post p4 = new Post();
             p4.id = 4;
