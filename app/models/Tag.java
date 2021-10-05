@@ -10,10 +10,8 @@ import play.libs.Json;
 
 import javax.persistence.*;
 import javax.persistence.OrderBy;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.sql.SQLOutput;
+import java.util.*;
 
 @Entity
 public class Tag extends Model {
@@ -23,16 +21,14 @@ public class Tag extends Model {
 
     @Constraints.Required
     @Column(unique = true)
-    public String name;
+    public String description;
 
     @Constraints.Required
     @Constraints.Pattern("#(?:[0-9a-fA-F]{3}){1,2}")
-    @Column(unique = true)
     public String color;
 
     @Column(unique = true)
-    @Constraints.Pattern("([a-z0-9_]+(([\\-\\/])([a-z0-9_]+))*)?")
-    public String alias;
+    public String name;
 
     @ManyToMany
     @OrderBy("posted DESC")
@@ -47,7 +43,22 @@ public class Tag extends Model {
             form.errors().add(new ValidationError("name", "Name must be unique."));
             return false;
         }
-
+        if (tagID != 0) {
+            id = tagID;
+            update();
+        } else {
+            save();
+        }
         return true;
+    }
+
+    public static SortedMap<String, String> getIDNamePairs() {
+        List<Tag> tags = Tag.find.query().where().orderBy("name ASC").findList();
+        SortedMap<String, String> returnedTags = new TreeMap<String, String>() {};
+        for (Tag t : tags) {
+            returnedTags.put(String.valueOf(t.id), t.name);
+        }
+        System.out.println(returnedTags);
+        return returnedTags;
     }
 }

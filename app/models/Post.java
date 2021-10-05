@@ -37,6 +37,7 @@ public class Post extends Model {
     public List<Comment> comments = new ArrayList<>();
 
     @ManyToMany(mappedBy = "posts")
+    @OrderBy("name ASC")
     public List<Tag> tags = new ArrayList<>();
 
     public static Finder<Integer, Post> find = new Finder<>(Post.class);

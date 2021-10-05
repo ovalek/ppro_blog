@@ -5,11 +5,19 @@
 @implicitFieldConstructor = @{ b3.horizontal.fieldConstructor("col-sm-4", "col-sm-8") }
 
 @front.main(section) {
-
     @if(post.published) {
         <div class="well">
             <h2><small class="pull-right" title="Posted">@post.posted.format("yyyy-MM-dd")</small>@post.title</h2>
             <div class="clearfix"></div>
+            @if(post.tags.size() > 0) {
+                <div class="tags">
+                    @for(t <- post.tags) {
+                        <div class="tag" style="border: 3px solid @t.color;" title="@t.description">
+                            @t.name
+                        </div>
+                    }
+                </div>
+            }
             <div>@Html(post.content)</div>
             @if(post.comments.size() > 0) {
                 <div class="clearfix"></div><br/>

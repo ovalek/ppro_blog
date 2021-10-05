@@ -5,6 +5,15 @@
     @for(p <- Post.find.query().where().eq("section_id", section.id).eq("published", true).orderBy("posted DESC").findList()) {
         <div class="well">
             <h2><small class="pull-right" title="Posted">@p.posted.format("yyyy-MM-dd")</small><a href="@routes.FrontController.post(section.alias, p.id)">@p.title</a></h2>
+            @if(p.tags.size() > 0) {
+                <div class="tags">
+                @for(t <- p.tags) {
+                    <div class="tag" style="border: 3px solid @t.color;" title="@t.description">
+                    @t.name
+                    </div>
+                }
+                </div>
+            }
             <div class="clearfix"></div>
             <div>@Html(p.content)</div>
         </div>

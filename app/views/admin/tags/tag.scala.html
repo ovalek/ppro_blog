@@ -1,0 +1,30 @@
+@import b3.horizontal.fieldConstructor
+@import models.view.DependenciesContainer
+@import views.html.helper.CSRF
+@(dc: DependenciesContainer, tagID: Integer, form: play.data.Form[Tag])(implicit request: play.mvc.Http.Request, messages: Messages)
+
+@implicitFieldConstructor = @{ b3.horizontal.fieldConstructor("col-sm-4", "col-sm-8") }
+
+@*
+* Call the `main` template with one argument, that represents
+* global template variables.
+*@
+@admin.main(dc) {
+    <div class="clearfix page-header">
+        <h3>@dc.title</h3>
+    </div>
+
+    <div class="col-md-10 well">
+        <fieldset>
+            <legend>Tag form</legend>
+
+            @b3.form(CSRF(routes.AdminTagsController.save(tagID))) {
+                @b3.text( form("name"), '_label -> "Name", 'placeholder -> "Tag name" )
+                @b3.text( form("description"), '_label -> "Description", 'placeholder -> "Tag description" )
+                @b3.color( form("color"), '_label -> "Color", 'placeholder -> "tag color" )
+                @b3.submit('class -> "btn btn-default"){ Save }
+            }
+
+        </fieldset>
+    </div>
+}

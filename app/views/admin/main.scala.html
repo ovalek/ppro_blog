@@ -53,6 +53,11 @@
                             } else {
                                 <li><a title="Users" href="@routes.AdminUsersController.list"><span class="glyphicon glyphicon glyphicon-user"></span>Users</a></li>
                             }
+                            @if(dc.request.uri.contains(routes.AdminTagsController.list.toString())){
+                                <li class="active"><a title="Tags" href="@routes.AdminTagsController.list"><span class="glyphicon glyphicon glyphicon-user"></span>Tags</a></li>
+                            } else {
+                                <li><a title="Tags" href="@routes.AdminTagsController.list"><span class="glyphicon glyphicon glyphicon-tags"></span>Tags</a></li>
+                            }
                         </ul>
 
                         <ul class="nav navbar-nav navbar-right">

@@ -1,0 +1,66 @@
+@import models.view.DependenciesContainer
+@(dc: DependenciesContainer, tags: java.util.List[Tag], csrf: String)(implicit request: play.mvc.Http.Request, messages: Messages)
+
+@*
+* Call the `main` template with one argument, that represents
+* global template variables.
+*@
+@admin.main(dc) {
+
+    <div class="clearfix page-header">
+        <h3>@dc.title</h3>
+    </div>
+
+    <div class="btnContainer">
+        <a class="btn btn-primary" href="@routes.AdminTagsController.tag(0)"><span class="glyphicon glyphicon-plus-sign"></span>New tag</a>
+    </div>
+
+    <table class="table table-striped table-hover withPadding">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+                <th><!-- --></th>
+            </tr>
+        </thead>
+        <tbody id="tableSections">
+            @*{sections = Section.find.where().orderBy("menu_order ASC").findList()}*@
+            @for(t <- tags) {
+                <tr id="tag-@t.id">
+                    <td class="name"><strong style="border-bottom: solid 3px @t.color">@t.name</strong></td>
+                    <td>@t.description</td>
+                    <td>
+                        <div class="tableBtnContainer">
+                            <a class="btn btn-sm btn-default glyphicon glyphicon-wrench" data-item-edit data-item-id="@t.id" title="Update" data-toggle="tooltip" data-placement="bottom" href="@routes.AdminTagsController.tag(t.id)"></a>
+                            <a href="#" data-href="@routes.AdminTagsController.remove(t.id)?csrfToken=@csrf" class="btn btn-sm btn-danger glyphicon glyphicon-trash" data-item-delete="@t.id" data-name="@t.name" title="Remove" data-toggle="tooltip" data-placement="bottom"></a>
+                            </div>
+                            </td>
+                            </tr>
+                            }
+    </table>
+
+    <div class="btnBottomContainer">
+        <span>Tags count: <strong>@tags.size()</strong></span>
+    </div>
+}
+
+<script>
+        jQuery(document).ready(function($) {
+            var $table = $('#tableTags');
+            $table.on('click', 'a[data-item-delete]', function (event) {
+                event.preventDefault();
+                var name = $(this).attr('data-name');
+                var location = $(this).attr("data-href");
+                $.my.confirmDialogWC(
+                        'confirm',
+                        'danger',
+                        'Confirmation',
+                        'Do you really want to remove tag "<strong>' + name + '</strong>"?',
+                        'storno',
+                        function () {
+                            window.location.replace(location);
+                        }
+                );
+            });
+        });
+</script>

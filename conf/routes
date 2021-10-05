@@ -43,6 +43,11 @@ GET   /admin/section/:sectionID/        controllers.AdminSectionsController.sect
 POST  /admin/section/:sectionID/        controllers.AdminSectionsController.save(request: Request, sectionID:java.lang.Integer)
 GET   /admin/section/remove/:sectionID/ controllers.AdminSectionsController.remove(request: Request, sectionID:java.lang.Integer)
 
+# tags
+GET   /admin/tag/:tagID/        controllers.AdminTagsController.tag(request: Request, tagID:java.lang.Integer)
+POST  /admin/tag/:tagID/        controllers.AdminTagsController.save(request: Request, tagID:java.lang.Integer)
+GET   /admin/tag/remove/:tagID/ controllers.AdminTagsController.remove(request: Request, tagID:java.lang.Integer)
+GET   /admin/tags/                controllers.AdminTagsController.list(request: Request)
 
 # users
 GET   /admin/users/                     controllers.AdminUsersController.list(request: Request)
