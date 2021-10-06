@@ -3,6 +3,7 @@ package controllers;
 import models.Comment;
 import models.Post;
 import models.Section;
+import models.Tag;
 import models.view.DependenciesContainer;
 import play.data.Form;
 import play.data.FormFactory;
@@ -16,6 +17,7 @@ import play.mvc.Security;
 import views.html.admin.posts.list;
 
 import javax.inject.Inject;
+import java.util.List;
 
 @Security.Authenticated(Secured.class)
 public class AdminPostsController extends Controller {
@@ -73,7 +75,9 @@ public class AdminPostsController extends Controller {
             dc.title = "New post";
         }
 
-        return ok(views.html.admin.posts.post.render(dc, section, postID, postForm, dc.request, dc.messages));
+
+
+        return ok(views.html.admin.posts.post.render(dc, section, postID, postForm, Tag.getIDNamePairs(), dc.request, dc.messages));
     }
 
     @RequireCSRFCheck
@@ -84,7 +88,7 @@ public class AdminPostsController extends Controller {
         Form<Post> postForm = formFactory.form(Post.class).bindFromRequest(dc.request);
 
         if (postForm.hasErrors()) {
-            return badRequest(views.html.admin.posts.post.render(dc, section, postID, postForm, dc.request, dc.messages));
+            return badRequest(views.html.admin.posts.post.render(dc, section, postID, postForm, Tag.getIDNamePairs(), dc.request, dc.messages));
         } else {
             Post p = postForm.get();
 
@@ -157,5 +161,4 @@ public class AdminPostsController extends Controller {
 
         return redirect(routes.AdminPostsController.comments(sectionID, postID));
     }
-
 }

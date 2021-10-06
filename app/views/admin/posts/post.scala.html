@@ -1,7 +1,8 @@
 @import b3.horizontal.fieldConstructor
 @import models.view.DependenciesContainer
 @import views.html.helper.CSRF
-@(dc: DependenciesContainer, section: Section, postID: Integer, form: play.data.Form[Post])(implicit request: play.mvc.Http.Request, messages: Messages)
+@import java.util
+@(dc: DependenciesContainer, section: Section, postID: Integer, form: play.data.Form[Post], tags: util.SortedMap[String, String])(implicit request: play.mvc.Http.Request, messages: Messages)
 
 @implicitFieldConstructor = @{ b3.horizontal.fieldConstructor("col-sm-4", "col-sm-8") }
 
@@ -13,11 +14,13 @@
     <div class="col-md-10 well">
         <fieldset id="postForm">
             <legend>Post form</legend>
-
             @b3.form(CSRF(routes.AdminPostsController.save(section.id, postID))) {
                 @b3.text( form("title"), '_label -> "Title", 'placeholder -> "Post title" )
                 @b3.textarea( form("content"), '_label -> "Content" )
                 @b3.checkbox( form("published"), '_text -> "Published", 'value -> true )
+                @defining(tags.toSeq) { tags2 =>
+                    @b3.select( form("tags"), options = tags2, '_text -> "Tags", 'multiple -> true)
+                }
                 @* hack to fix boolean saving - EBEAN or PLAY bug!!! *@
                 <input type="hidden" name="@form("published").name" value="0">
                 @b3.submit('class -> "btn btn-default"){ Save }

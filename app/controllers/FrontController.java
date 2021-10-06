@@ -55,6 +55,7 @@ public class FrontController extends Controller {
         if (post == null) {
             return redirect(routes.FrontController.section(sectionAlias));
         }
+        System.out.println(post.tags.size());
 
         Form<Comment> commentForm = formFactory.form(Comment.class);
 
