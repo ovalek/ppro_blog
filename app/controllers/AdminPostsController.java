@@ -1,12 +1,10 @@
 package controllers;
 
-import models.Comment;
-import models.Post;
-import models.Section;
-import models.Tag;
+import models.*;
 import models.view.DependenciesContainer;
 import play.data.Form;
 import play.data.FormFactory;
+import play.data.validation.ValidationError;
 import play.filters.csrf.AddCSRFToken;
 import play.filters.csrf.CSRF;
 import play.filters.csrf.RequireCSRFCheck;
@@ -17,7 +15,7 @@ import play.mvc.Security;
 import views.html.admin.posts.list;
 
 import javax.inject.Inject;
-import java.util.List;
+import java.util.*;
 
 @Security.Authenticated(Secured.class)
 public class AdminPostsController extends Controller {
@@ -61,6 +59,7 @@ public class AdminPostsController extends Controller {
         Section section = getSection(sectionID);
 
         Form<Post> postForm = formFactory.form(Post.class);
+        List<Integer> selectedTags = new ArrayList<Integer>();
 
         if (postID != 0) {
             dc.title = "Update post";
@@ -68,6 +67,9 @@ public class AdminPostsController extends Controller {
             Post post = Post.find.byId(postID);
             if (post != null) {
                 postForm = postForm.fill(post);
+                for (Tag tag: post.tags) {
+                    selectedTags.add(tag.id);
+                }
             } else {
                 return redirect(routes.AdminPostsController.post(sectionID, 0));
             }
@@ -75,9 +77,7 @@ public class AdminPostsController extends Controller {
             dc.title = "New post";
         }
 
-
-
-        return ok(views.html.admin.posts.post.render(dc, section, postID, postForm, Tag.getIDNamePairs(), dc.request, dc.messages));
+        return ok(views.html.admin.posts.post.render(dc, section, postID, postForm, Tag.getAllOrdered(), selectedTags, dc.request, dc.messages));
     }
 
     @RequireCSRFCheck
@@ -85,15 +85,130 @@ public class AdminPostsController extends Controller {
         dc.setRequest(request);
         Section section = getSection(sectionID);
 
-        Form<Post> postForm = formFactory.form(Post.class).bindFromRequest(dc.request);
+//        MultipartFormData<PostSaveData> data = dc.request.body().asMultipartFormData();
+//        Wrappers.MapWrapper<String, String> data = dc.request.body().;
 
+//        DynamicForm requestData = formFactory.form().bindFromRequest(dc.request);
+
+//        Form<PostSaveData> postSaveDataForm = formFactory.form(PostSaveData.class).bindFromRequest(dc.request);
+        Form<PostSaveData> postSaveDataForm = formFactory.form(PostSaveData.class).withDirectFieldAccess(true).bindFromRequest(dc.request);
+
+
+
+//        List<Tag> tags = new ArrayList<Tag>();
+//        for (String tagID: requestData.get("tags[]")) {
+//
+//        }
+//
+
+//        Map<String, String> newData = new HashMap<>();
+//        Map<String, String[]> urlFormEncoded = dc.request.body().asFormUrlEncoded();
+//        if (urlFormEncoded != null) {
+//            for (String key : urlFormEncoded.keySet()) {
+//                String[] value = urlFormEncoded.get(key);
+//                if (value.length == 1) {
+//                    newData.put(key, value[0]);
+//                } else if (value.length > 1) {
+//                    for (int i = 0; i < value.length; i++) {
+//                        newData.put(key + "[" + i + "]", value[i]);
+//                    }
+//                }
+//            }
+//        }
+
+//        Map<String, String> newData = new HashMap<>();
+//        Map<String, String[]> urlFormEncoded = dc.request.body().asFormUrlEncoded();
+//        if (urlFormEncoded != null) {
+//            for (String key : urlFormEncoded.keySet()) {
+//                String[] value = urlFormEncoded.get(key);
+//                if (value.length == 1) {
+//                    newData.put(key, value[0]);
+//                } else if (value.length > 1) {
+//                    String keyPrefix = key;
+//                    String keyPostfix = "";
+//                    int pos = key.indexOf(".");
+//                    if (pos > -1) {
+//                        keyPrefix = key.substring(0, pos);
+//                        keyPostfix = key.substring(pos, key.length());
+//                    }
+//                    for (int i = 0; i < value.length; i++) {
+//                        newData.put(keyPrefix + "[" + i + "]" + keyPostfix, value[i]);
+//                    }
+//                }
+//            }
+//        }
+
+//        Map<String, String> newData = new HashMap<String, String>();
+//        Map<String, String[]> urlFormEncoded = dc.request.body().asFormUrlEncoded();
+//
+//        if (urlFormEncoded != null) {
+//            for (String key : urlFormEncoded.keySet()) {
+//                String[] value = urlFormEncoded.get(key);
+//                if (value.length == 1 || key.equals("published")) {
+//                    newData.put(key, value[0]);
+//                } else if (value.length > 1) {
+//                    for (int i = 0; i < value.length; i++) {
+//
+//                        newData.put(key + "[" + i + "]", value[i]);
+//                    }
+//                }
+//            }
+//        }
+        // bind to the MyEntity form object
+//        Form<Post> postForm = formFactory.form(Post.class).bind(dc.lang, dc.request.attrs(), newData);
+
+//        DynamicForm form = formFactory.form().bindFromRequest(dc.request);
+//        Collection<String> tags = form.rawData().values();
+//
+//        // bind to the MyEntity form object
+////        Form<Post> postForm = formFactory.form(Post.class).bindFromRequestData(newData);
+//        Form<Post> postForm = formFactory.form(Post.class).bindFromRequest(dc.request);
+//        Form<Post> postForm = formFactory.form(Post.class).bind(dc.lang, dc.request.attrs(), newData);
+
+
+        java.util.List<play.data.validation.ValidationError> errors = new ArrayList<ValidationError>();
+        if (postSaveDataForm.hasErrors()) {
+            errors = postSaveDataForm.errors();
+        }
+        postSaveDataForm = postSaveDataForm.discardingErrors();
+        PostSaveData psd = postSaveDataForm.get();
+        Post tmpPost = new Post();
+        tmpPost.title = psd.title;
+        tmpPost.content = psd.content;
+        tmpPost.published = psd.published;
+        tmpPost.tags = Tag.find.query().where().in("id", psd.tags).orderBy("name ASC").findList();
+        Form<Post> postForm = formFactory.form(Post.class).fill(tmpPost);
+        for (ValidationError error: errors) {
+            postForm = postForm.withError(error);
+        }
+
+//        Form<Post> postForm = formFactory.form(Post.class).bindFromRequest(dc.request);
+
+//        if (postSaveDataForm.hasErrors()) {
         if (postForm.hasErrors()) {
-            return badRequest(views.html.admin.posts.post.render(dc, section, postID, postForm, Tag.getIDNamePairs(), dc.request, dc.messages));
+//            Form<Post> postForm = formFactory.form(Post.class);
+            List<Integer> selectedTags = new ArrayList<Integer>();
+            if (tmpPost != null) {
+                for (Tag tag: tmpPost.tags) {
+                    selectedTags.add(tag.id);
+                }
+            }
+            return badRequest(views.html.admin.posts.post.render(dc, section, postID, postForm, Tag.getAllOrdered(), selectedTags, dc.request, dc.messages));
         } else {
             Post p = postForm.get();
+//            PostSaveData psd = postSaveDataForm.get();
+//            Post p = new Post();
+//            p.title = psd.title;
+//            p.content = psd.content;
+////            p.tags.addAll(psd.tags);
+//            p.tags = Tag.find.query().where().in("id", psd.tags).orderBy("name ASC").findList();
+//            for (Integer tagID: psd.tags) {
+//                p.tags.add(tagID, );
+//            }
 
             if (postID != 0) {
                 p.id = postID;
+                // TODO: fix saving post with no selected tags
                 p.update();
             } else {
                 p.section = section;

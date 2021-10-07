@@ -52,13 +52,7 @@ public class Tag extends Model {
         return true;
     }
 
-    public static SortedMap<String, String> getIDNamePairs() {
-        List<Tag> tags = Tag.find.query().where().orderBy("name ASC").findList();
-        SortedMap<String, String> returnedTags = new TreeMap<String, String>() {};
-        for (Tag t : tags) {
-            returnedTags.put(String.valueOf(t.id), t.name);
-        }
-        System.out.println(returnedTags);
-        return returnedTags;
+    public static List<Tag> getAllOrdered() {
+        return Tag.find.query().where().orderBy("name ASC").findList();
     }
 }

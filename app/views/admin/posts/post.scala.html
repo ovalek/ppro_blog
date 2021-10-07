@@ -2,7 +2,7 @@
 @import models.view.DependenciesContainer
 @import views.html.helper.CSRF
 @import java.util
-@(dc: DependenciesContainer, section: Section, postID: Integer, form: play.data.Form[Post], tags: util.SortedMap[String, String])(implicit request: play.mvc.Http.Request, messages: Messages)
+@(dc: DependenciesContainer, section: Section, postID: Integer, form: play.data.Form[Post], tags: util.List[Tag], selectedTags: util.List[Integer])(implicit request: play.mvc.Http.Request, messages: Messages)
 
 @implicitFieldConstructor = @{ b3.horizontal.fieldConstructor("col-sm-4", "col-sm-8") }
 
@@ -18,8 +18,14 @@
                 @b3.text( form("title"), '_label -> "Title", 'placeholder -> "Post title" )
                 @b3.textarea( form("content"), '_label -> "Content" )
                 @b3.checkbox( form("published"), '_text -> "Published", 'value -> true )
-                @defining(tags.toSeq) { tags2 =>
-                    @b3.select( form("tags"), options = tags2, '_text -> "Tags", 'multiple -> true)
+                @b3.select( form("tags"), '_text -> "Tags", 'multiple -> true, 'value -> selectedTags ) { implicit values =>
+                    @for(tag <- tags) {
+                        @if(selectedTags.contains(tag.id)) {
+                            @b3.selectOption(tag.id, tag.name, 'selected -> "selected")
+                        } else {
+                            @b3.selectOption(tag.id, tag.name)
+                        }
+                    }
                 }
                 @* hack to fix boolean saving - EBEAN or PLAY bug!!! *@
                 <input type="hidden" name="@form("published").name" value="0">
