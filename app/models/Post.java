@@ -36,7 +36,7 @@ public class Post extends Model {
     @OrderBy("posted DESC")
     public List<Comment> comments = new ArrayList<>();
 
-    @ManyToMany(mappedBy = "posts")
+    @ManyToMany(mappedBy = "posts", cascade = CascadeType.REMOVE)
     @OrderBy("name ASC")
     public List<Tag> tags = new ArrayList<>();
 
