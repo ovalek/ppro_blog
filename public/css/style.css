@@ -320,6 +320,7 @@ div.describePhotoDialog > img { margin:20px; box-shadow:0px 0px 10px 3px #0866c6
 
 .tags {
 	display: flex;
+	flex-wrap: wrap;
 }
 
 .tags .tag {
@@ -329,5 +330,17 @@ div.describePhotoDialog > img { margin:20px; box-shadow:0px 0px 10px 3px #0866c6
 }
 
 .tags .tag:first-child {
+	margin-left: 0;
+}
+
+.tags .tag_postList {
+	font-size: 1rem;
+	margin-left: 1rem;
+	margin-top: 0.3rem;
+	border-radius: 2rem;
+	padding: 0.2rem 1rem;
+}
+
+.tags .tag_postList:first-child {
 	margin-left: 0;
 }
