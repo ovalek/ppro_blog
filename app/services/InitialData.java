@@ -6,19 +6,9 @@ import org.mindrot.jbcrypt.BCrypt;
 
 import javax.inject.Singleton;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 
 @Singleton
 public class InitialData {
-//    private static InitialData instance = null;
-
-//    public static InitialData getInstance()
-//    {
-//        if (instance == null) {
-//            instance = new InitialData();
-//        }
-//        return instance;
-//    }
 
     public InitialData() {
 
@@ -31,11 +21,6 @@ public class InitialData {
             u1.name = "Admin";
             u1.password =  BCrypt.hashpw("password", BCrypt.gensalt(12));
             u1.save();
-/*            SqlUpdate insert = Ebean.createSqlUpdate(
-                    "INSERT INTO user (email, name, password) VALUES ('admin@nekde.cz', 'Admin', '"
-                    + BCrypt.hashpw("password", BCrypt.gensalt(12)) + "')"
-            );
-            insert.execute();*/
         }
 
         if (Ebean.find(Section.class).findCount() == 0) {
@@ -69,15 +54,6 @@ public class InitialData {
             s5.alias = "section-d";
             s5.menu_order = 4;
             s5.save();
-
-            /*SqlUpdate insert = Ebean.createSqlUpdate(
-                    "INSERT INTO section (id, name, alias, menu_order) VALUES ('1', 'Homepage', '', '0');"
-                    + "INSERT INTO section (id, name, alias, menu_order) VALUES ('2', 'Section A', 'section-a', '1');"
-                    + "INSERT INTO section (id, name, alias, menu_order) VALUES ('3', 'Section B', 'section-b', '2');"
-                    + "INSERT INTO section (id, name, alias, menu_order) VALUES ('4', 'Section C', 'section-c', '3');"
-                    + "INSERT INTO section (id, name, alias, menu_order) VALUES ('5', 'Section D', 'section-d', '4');"
-            );
-            insert.execute();*/
         }
 
         if (Ebean.find(Tag.class).findCount() == 0) {
@@ -134,15 +110,6 @@ public class InitialData {
             p5.title = "Section A post #2";
             p5.content = "Příliš <strong>žluťoučký kůň</strong> <em>úpěl</em> <s>ďábelské</s> ódy.";
             p5.save();
-
-            /*SqlUpdate insert = Ebean.createSqlUpdate(
-                    "INSERT INTO post (id, section_id, title, content, posted) VALUES ('1', '1', 'Homepage post #1', 'Příliš <strong>žluťoučký kůň</strong> <em>úpěl</em> <s>ďábelské</s> ódy.', '" + sdf.format(new Date()) + "');"
-                            + "INSERT INTO post (id, section_id, title, content, posted) VALUES ('2', '1', 'Homepage post #2', 'Lorem <strong>ipsum</strong> <em>dolor</em> <s>sit</s> amet.', '" + sdf.format(new Date()) + "');"
-                            + "INSERT INTO post (id, section_id, title, content, posted) VALUES ('3', '1', 'Homepage post #3', 'Příliš <strong>žluťoučký kůň</strong> <em>úpěl</em> <s>ďábelské</s> ódy.', '" + sdf.format(new Date()) + "');"
-                            + "INSERT INTO post (id, section_id, title, content, posted) VALUES ('4', '2', 'Homepage post #1', 'Lorem <strong>ipsum</strong> <em>dolor</em> <s>sit</s> amet.', '" + sdf.format(new Date()) + "');"
-                            + "INSERT INTO post (id, section_id, title, content, posted) VALUES ('5', '2', 'Homepage post #1', 'Příliš <strong>žluťoučký kůň</strong> <em>úpěl</em> <s>ďábelské</s> ódy.', '" + sdf.format(new Date()) + "');"
-            );
-            insert.execute();*/
         }
 
         if (Ebean.find(Comment.class).findCount() == 0) {
@@ -171,15 +138,6 @@ public class InitialData {
             c5.post = Post.find.byId(3);
             c5.content = "Plain text comment: <strong>žluťoučký kůň</strong> <em>úpěl</em>.";
             c5.save();
-
-            /*SqlUpdate insert = Ebean.createSqlUpdate(
-                    "INSERT INTO comment (id, post_id, name, content, posted) VALUES ('1', '1', 'Lisa Simpson', 'Plain text comment: <strong>žluťoučký kůň</strong> <em>úpěl</em>.', '" + sdf.format(new Date()) + "');"
-                            + "INSERT INTO comment (id, post_id, name, content, posted) VALUES ('2', '1', 'Homer Simpson', 'Plain text comment: <strong>ipsum</strong> <em>dolor</em>.', '" + sdf.format(new Date()) + "');"
-                            + "INSERT INTO comment (id, post_id, name, content, posted) VALUES ('3', '2', 'Bart Simpson', 'Plain text comment: <strong>žluťoučký kůň</strong> <em>úpěl</em>.', '" + sdf.format(new Date()) + "');"
-                            + "INSERT INTO comment (id, post_id, name, content, posted) VALUES ('4', '2', 'Marge Simpson', 'Plain text comment: <strong>ipsum</strong> <em>dolor</em>.', '" + sdf.format(new Date()) + "');"
-                            + "INSERT INTO comment (id, post_id, name, content, posted) VALUES ('5', '3', 'Maggie Simpson', 'Plain text comment: <strong>žluťoučký kůň</strong> <em>úpěl</em>.', '" + sdf.format(new Date()) + "');"
-            );
-            insert.execute();*/
         }
     }
 }

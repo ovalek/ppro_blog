@@ -1,16 +1,12 @@
 package models;
 
 import io.ebean.*;
-import com.fasterxml.jackson.databind.JsonNode;
 import io.ebean.annotation.Transactional;
-import play.data.Form;
 import play.data.validation.Constraints;
 import play.data.validation.ValidationError;
-import play.libs.Json;
 
 import javax.persistence.*;
 import javax.persistence.OrderBy;
-import java.sql.SQLOutput;
 import java.util.*;
 
 @Entity

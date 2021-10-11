@@ -55,10 +55,8 @@
             <script>
                 jQuery(document).ready(function($) {
                     @for(error <- form.globalErrors) {
-                        @*$.my.notify("@error.format(messages)", "error");*@
                         $.my.notify("@error.message", "error");
                     }
-                    @*$.my.notify("@{form.globalError.message}", "error");*@
                 });
             </script>
         }

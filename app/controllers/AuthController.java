@@ -29,14 +29,12 @@ public class AuthController extends Controller {
 
     public Result authenticate(Http.Request request) {
         dc.setRequest(request);
-        //return ok(User.find.all().toString());
 
         Form<LoginForm> loginForm = formFactory.form(LoginForm.class).bindFromRequest(dc.request);
 
         if (loginForm.hasErrors()) {
             return badRequest(login.render(loginForm, dc.request, dc.messages));
         } else {
-//            session().clear();
             Http.Session newSession = new Http.Session().adding("email", loginForm.get().email);
             return redirect(
                     routes.AdminHomeController.index()
@@ -46,7 +44,6 @@ public class AuthController extends Controller {
 
     public Result logout(Http.Request request) {
         dc.setRequest(request);
-//        session().clear();
         return redirect(routes.FrontController.section("")).withNewSession();
     }
 

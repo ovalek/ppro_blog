@@ -24,7 +24,6 @@
             </tr>
         </thead>
         <tbody id="tableSections">
-            @*{sections = Section.find.where().orderBy("menu_order ASC").findList()}*@
             @for(t <- tags) {
                 <tr id="tag-@t.id">
                     <td class="name"><strong style="border-bottom: solid 3px @t.color">@t.name</strong></td>

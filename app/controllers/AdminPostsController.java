@@ -85,86 +85,7 @@ public class AdminPostsController extends Controller {
         dc.setRequest(request);
         Section section = getSection(sectionID);
 
-//        MultipartFormData<PostSaveData> data = dc.request.body().asMultipartFormData();
-//        Wrappers.MapWrapper<String, String> data = dc.request.body().;
-
-//        DynamicForm requestData = formFactory.form().bindFromRequest(dc.request);
-
-//        Form<PostSaveData> postSaveDataForm = formFactory.form(PostSaveData.class).bindFromRequest(dc.request);
         Form<PostSaveData> postSaveDataForm = formFactory.form(PostSaveData.class).withDirectFieldAccess(true).bindFromRequest(dc.request);
-
-
-
-//        List<Tag> tags = new ArrayList<Tag>();
-//        for (String tagID: requestData.get("tags[]")) {
-//
-//        }
-//
-
-//        Map<String, String> newData = new HashMap<>();
-//        Map<String, String[]> urlFormEncoded = dc.request.body().asFormUrlEncoded();
-//        if (urlFormEncoded != null) {
-//            for (String key : urlFormEncoded.keySet()) {
-//                String[] value = urlFormEncoded.get(key);
-//                if (value.length == 1) {
-//                    newData.put(key, value[0]);
-//                } else if (value.length > 1) {
-//                    for (int i = 0; i < value.length; i++) {
-//                        newData.put(key + "[" + i + "]", value[i]);
-//                    }
-//                }
-//            }
-//        }
-
-//        Map<String, String> newData = new HashMap<>();
-//        Map<String, String[]> urlFormEncoded = dc.request.body().asFormUrlEncoded();
-//        if (urlFormEncoded != null) {
-//            for (String key : urlFormEncoded.keySet()) {
-//                String[] value = urlFormEncoded.get(key);
-//                if (value.length == 1) {
-//                    newData.put(key, value[0]);
-//                } else if (value.length > 1) {
-//                    String keyPrefix = key;
-//                    String keyPostfix = "";
-//                    int pos = key.indexOf(".");
-//                    if (pos > -1) {
-//                        keyPrefix = key.substring(0, pos);
-//                        keyPostfix = key.substring(pos, key.length());
-//                    }
-//                    for (int i = 0; i < value.length; i++) {
-//                        newData.put(keyPrefix + "[" + i + "]" + keyPostfix, value[i]);
-//                    }
-//                }
-//            }
-//        }
-
-//        Map<String, String> newData = new HashMap<String, String>();
-//        Map<String, String[]> urlFormEncoded = dc.request.body().asFormUrlEncoded();
-//
-//        if (urlFormEncoded != null) {
-//            for (String key : urlFormEncoded.keySet()) {
-//                String[] value = urlFormEncoded.get(key);
-//                if (value.length == 1 || key.equals("published")) {
-//                    newData.put(key, value[0]);
-//                } else if (value.length > 1) {
-//                    for (int i = 0; i < value.length; i++) {
-//
-//                        newData.put(key + "[" + i + "]", value[i]);
-//                    }
-//                }
-//            }
-//        }
-        // bind to the MyEntity form object
-//        Form<Post> postForm = formFactory.form(Post.class).bind(dc.lang, dc.request.attrs(), newData);
-
-//        DynamicForm form = formFactory.form().bindFromRequest(dc.request);
-//        Collection<String> tags = form.rawData().values();
-//
-//        // bind to the MyEntity form object
-////        Form<Post> postForm = formFactory.form(Post.class).bindFromRequestData(newData);
-//        Form<Post> postForm = formFactory.form(Post.class).bindFromRequest(dc.request);
-//        Form<Post> postForm = formFactory.form(Post.class).bind(dc.lang, dc.request.attrs(), newData);
-
 
         java.util.List<play.data.validation.ValidationError> errors = new ArrayList<ValidationError>();
         if (postSaveDataForm.hasErrors()) {
@@ -182,11 +103,7 @@ public class AdminPostsController extends Controller {
             postForm = postForm.withError(error);
         }
 
-//        Form<Post> postForm = formFactory.form(Post.class).bindFromRequest(dc.request);
-
-//        if (postSaveDataForm.hasErrors()) {
         if (postForm.hasErrors()) {
-//            Form<Post> postForm = formFactory.form(Post.class);
             List<Integer> selectedTags = new ArrayList<Integer>();
             if (tmpPost != null) {
                 for (Tag tag: tmpPost.tags) {
@@ -196,15 +113,6 @@ public class AdminPostsController extends Controller {
             return badRequest(views.html.admin.posts.post.render(dc, section, postID, postForm, Tag.getAllOrdered(), selectedTags, dc.request, dc.messages));
         } else {
             Post p = postForm.get();
-//            PostSaveData psd = postSaveDataForm.get();
-//            Post p = new Post();
-//            p.title = psd.title;
-//            p.content = psd.content;
-////            p.tags.addAll(psd.tags);
-//            p.tags = Tag.find.query().where().in("id", psd.tags).orderBy("name ASC").findList();
-//            for (Integer tagID: psd.tags) {
-//                p.tags.add(tagID, );
-//            }
 
             // Hack to fix saving empty tags
             if (p.tags.size() == 0) {
@@ -263,9 +171,6 @@ public class AdminPostsController extends Controller {
             return redirect(routes.AdminPostsController.comments(sectionID, postID));
         }
 
-        //Comment.find.byId(commentID).delete();
-
-        //return redirect(routes.AdminPostsController.comments(sectionID, postID));
     }
 
     @RequireCSRFCheck
@@ -276,7 +181,7 @@ public class AdminPostsController extends Controller {
             return redirect(routes.AdminPostsController.list(sectionID));
         }
 
-        int deletedRows = Comment.find.query().where().eq("post_id", (int) postID).delete();
+        Comment.find.query().where().eq("post_id", (int) postID).delete();
 
         return redirect(routes.AdminPostsController.comments(sectionID, postID));
     }

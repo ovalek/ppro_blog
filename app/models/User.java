@@ -1,15 +1,10 @@
 package models;
 
-//import com.avaje.ebean.Model;
 import io.ebean.*;
 import io.ebean.annotation.Transactional;
 import org.mindrot.jbcrypt.BCrypt;
-import play.Logger;
-import play.data.Form;
 import play.data.validation.Constraints;
 import play.data.validation.ValidationError;
-//import com.github.t3hnar.bcrypt;
-//import t3hnar
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -30,8 +25,6 @@ public class User extends Model {
     public String name;
 
     public static final Finder<Integer, User> find = new Finder<>(User.class);
-
-//    public static Model.Finder<Integer, User> find = new Finder<>(User.class);
 
     public static User authenticate(String email, String password) {
         if (email == null && password == null) return null;

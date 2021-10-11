@@ -8,16 +8,6 @@ import java.util.Optional;
 
 public class Secured extends Security.Authenticator {
 
-//    @Override
-//    public String getUsername(Http.Context ctx) {
-//        return ctx.session().get("email");
-//    }
-//
-//    @Override
-//    public play.mvc.Result onUnauthorized(Http.Context ctx) {
-//        return redirect(routes.AuthController.login());
-//    }
-
     @Override
     public Optional getUsername(Http.Request req) {
         return req.session().get("email");

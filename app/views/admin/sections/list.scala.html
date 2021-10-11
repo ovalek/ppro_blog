@@ -27,7 +27,6 @@
             </tr>
         </thead>
         <tbody id="tableSections">
-            @*{sections = Section.find.where().orderBy("menu_order ASC").findList()}*@
             @for(s <- sections) {
                 <tr id="section-@s.id">
                     <td class="name"><strong>@s.name</strong></td>
