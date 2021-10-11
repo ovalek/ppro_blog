@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  ppro-blog:
+    container_name: ppro-blog
+    image: mozilla/sbt:11.0.8_1.3.13
+    build:
+      args:
+        OPENJDK_TAG: 02fcb8332e05
+        SBT_VERSION: 1.3.13
+    volumes:
+      - .:/usr/src/ppro_blog:z
+    command: bash -c "cd /usr/src/ppro_blog && sbt compile && sbt run"
+    ports:
+      - 9000:9000
