@@ -6,6 +6,7 @@ import models.view.DependenciesContainer;
 import play.data.DynamicForm;
 import play.data.Form;
 import play.data.FormFactory;
+import play.data.validation.ValidationError;
 import play.filters.csrf.AddCSRFToken;
 import play.filters.csrf.CSRF;
 import play.filters.csrf.RequireCSRFCheck;
@@ -67,8 +68,9 @@ public class AdminTagsController extends Controller {
         } else {
             Tag t = tagForm.get();
 
-            boolean result = t.saveWithValidation(tagID, tagForm);
-            if (!result) {
+            ValidationError result = t.saveWithValidation(tagID);
+            if (result != null) {
+                tagForm = tagForm.withError(result);
                 return badRequest(views.html.admin.tags.tag.render(dc, tagID, tagForm, dc.request, dc.messages));
             }
 

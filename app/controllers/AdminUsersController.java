@@ -4,6 +4,7 @@ import models.User;
 import models.view.DependenciesContainer;
 import play.data.Form;
 import play.data.FormFactory;
+import play.data.validation.ValidationError;
 import play.filters.csrf.AddCSRFToken;
 import play.filters.csrf.CSRF;
 import play.filters.csrf.RequireCSRFCheck;
@@ -65,8 +66,10 @@ public class AdminUsersController extends Controller {
         } else {
             User u = userForm.get();
 
-            boolean result = u.saveWithValidation(userID, userForm);
-            if (!result) {
+            ValidationError result = u.saveWithValidation(userID);
+
+            if (result != null) {
+                userForm = userForm.withError(result);
                 return badRequest(views.html.admin.users.user.render(dc, userID, userForm, dc.request, dc.messages));
             }
 

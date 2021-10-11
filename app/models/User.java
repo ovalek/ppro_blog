@@ -45,20 +45,17 @@ public class User extends Model {
     }
 
     @Transactional
-    public boolean saveWithValidation(Integer userID, Form<User> form) {
+    public ValidationError saveWithValidation(Integer userID) {
         // check email
         if (User.find.query().where().eq("email", email).ne("id", userID).findCount() != 0) {
-            form.errors().add(new ValidationError("email", "Email must be unique."));
-            return false;
+            return new ValidationError("email", "Email must be unique.");
         }
 
         // force password
         if (password.isEmpty() && userID == 0) {
-            form.errors().add(new ValidationError("password", "Password must be specified."));
-            return false;
+            return new ValidationError("password", "Password must be specified.");
         } else if (password.isEmpty() && !User.find.byId(userID).email.equals(email)) {
-            form.errors().add(new ValidationError("email", "When you change the email, you must also fill the new password."));
-            return false;
+            return new ValidationError("email", "When you change the email, you must also fill the new password.");
         } else if (password.isEmpty()) {
             password = null;
         }
@@ -77,6 +74,6 @@ public class User extends Model {
             save();
         }
 
-        return true;
+        return null;
     }
 }

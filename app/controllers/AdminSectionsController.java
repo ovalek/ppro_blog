@@ -6,6 +6,7 @@ import models.view.DependenciesContainer;
 import play.data.DynamicForm;
 import play.data.Form;
 import play.data.FormFactory;
+import play.data.validation.ValidationError;
 import play.filters.csrf.AddCSRFToken;
 import play.filters.csrf.CSRF;
 import play.filters.csrf.RequireCSRFCheck;
@@ -100,8 +101,10 @@ public class AdminSectionsController extends Controller {
         } else {
             Section s = sectionForm.get();
 
-            boolean result = s.saveWithValidation(sectionID, sectionForm);
-            if (!result) {
+            ValidationError result = s.saveWithValidation(sectionID);
+
+            if (result != null) {
+                sectionForm = sectionForm.withError(result);
                 return badRequest(views.html.admin.sections.section.render(dc, sectionID, sectionForm, dc.request, dc.messages));
             }
 

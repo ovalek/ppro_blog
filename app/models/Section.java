@@ -38,17 +38,15 @@ public class Section extends Model {
     public static Finder<Integer, Section> find = new Finder<>(Section.class);
 
     @Transactional
-    public boolean saveWithValidation(Integer sectionID, Form<Section> form) {
+    public ValidationError saveWithValidation(Integer sectionID) {
         // check name
         if (Section.find.query().where().eq("name", name).ne("id", sectionID).findCount() != 0){
-            form.errors().add(new ValidationError("name", "Name must be unique."));
-            return false;
+            return new ValidationError("name", "Name must be unique.");
         }
 
         // check alias
         if (Section.find.query().where().eq("alias", alias).ne("id", sectionID).findCount() != 0){
-            form.errors().add(new ValidationError("alias", "Alias must be unique."));
-            return false;
+            return new ValidationError("alias", "Alias must be unique.");
         }
 
         if (sectionID != 0) {
@@ -60,7 +58,7 @@ public class Section extends Model {
             save();
         }
 
-        return true;
+        return null;
     }
 
     @Transactional

@@ -20,7 +20,6 @@ public class Tag extends Model {
     public int id;
 
     @Constraints.Required
-    @Column(unique = true)
     public String description;
 
     @Constraints.Required
@@ -37,11 +36,10 @@ public class Tag extends Model {
     public static Finder<Integer, Tag> find = new Finder<>(Tag.class);
 
     @Transactional
-    public boolean saveWithValidation(Integer tagID, Form<Tag> form) {
+    public ValidationError saveWithValidation(Integer tagID) {
         // check name
         if (Tag.find.query().where().eq("name", name).ne("id", tagID).findCount() != 0){
-            form.errors().add(new ValidationError("name", "Name must be unique."));
-            return false;
+            return new ValidationError("name", "Name must be unique.");
         }
         if (tagID != 0) {
             id = tagID;
@@ -49,7 +47,7 @@ public class Tag extends Model {
         } else {
             save();
         }
-        return true;
+        return null;
     }
 
     public static List<Tag> getAllOrdered() {
