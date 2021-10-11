@@ -1,6 +1,8 @@
 import models.*;
 import org.junit.*;
 import static org.junit.Assert.*;
+
+import org.mindrot.jbcrypt.BCrypt;
 import play.test.WithApplication;
 import static play.test.Helpers.*;
 
@@ -10,25 +12,30 @@ public class UserTest extends WithApplication {
         start(fakeApplication(inMemoryDatabase()));
     }
 
+    /**
+     * Test for adding user
+     */
     @Test
     public void createAndRetrieveUser() {
-        // new User("bob@gmail.com", "Bob", "secret").save();
         User testUser = new User();
         testUser.email = "bob@gmail.com";
         testUser.name = "Bob";
-        testUser.password = "heslo";
+        testUser.password = BCrypt.hashpw("heslo", BCrypt.gensalt(12));
         testUser.save();
-        User bob = User.find.where().eq("email", "bob@gmail.com").findUnique();
+        User bob = User.find.query().where().eq("email", "bob@gmail.com").findOne();
         assertNotNull(bob);
         assertEquals("Bob", bob.name);
     }
 
+    /**
+     * Test for user authentication
+     */
     @Test
     public void tryAuthenticateUser() {
         User testUser = new User();
         testUser.email = "bob@gmail.com";
         testUser.name = "Bob";
-        testUser.password = "secret";
+        testUser.password = BCrypt.hashpw("secret", BCrypt.gensalt(12));
         testUser.save();
 
         assertNotNull(User.authenticate("bob@gmail.com", "secret"));
