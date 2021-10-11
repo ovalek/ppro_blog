@@ -206,9 +206,13 @@ public class AdminPostsController extends Controller {
 //                p.tags.add(tagID, );
 //            }
 
+            // Hack to fix saving empty tags
+            if (p.tags.size() == 0) {
+                p.tags = new ArrayList<>();
+            }
+
             if (postID != 0) {
                 p.id = postID;
-                // TODO: fix saving post with no selected tags
                 p.update();
             } else {
                 p.section = section;
