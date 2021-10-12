@@ -17,7 +17,7 @@
                 @b3.text( form("title"), '_label -> "Title", 'placeholder -> "Post title" )
                 @b3.textarea( form("content"), '_label -> "Content" )
                 @b3.checkbox( form("published"), '_text -> "Published", 'value -> true )
-                @b3.select( form("tags"), '_text -> "Tags", 'multiple -> true, 'value -> selectedTags ) { implicit values =>
+                @b3.select( form("tags"), '_label -> "Tags", '_text -> "Tags", 'multiple -> true, 'value -> selectedTags ) { implicit values =>
                     @for(tag <- tags) {
                         @if(selectedTags.contains(tag.id)) {
                             @b3.selectOption(tag.id, tag.name, 'selected -> "selected")
